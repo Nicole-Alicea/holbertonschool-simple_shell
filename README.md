@@ -128,6 +128,9 @@ The program will be compiled this way:
 Name           |
 |---------------------|
 | README.md |
+| AUTHORS |
+| man_1_simple_shell |
+| simple_shell.c |
 
 #### Tasks
 
