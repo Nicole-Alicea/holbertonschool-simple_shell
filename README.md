@@ -80,7 +80,26 @@ For this simple shell project, we were divided into groups of three and given th
 
 Functions and System Calls+                 |Description
 |-----------------------------|----------------------------------------------|
-| all functions from string.h |
+| strlen() | Returns the length of the string. |
+| strcpy() | Copy one string to another. |
+| strncpy() | Copy first n characters of one string to another. |
+| strcat() | Concatenates two strings. |
+| strncat() | Concatenates first n characters of one string to another. |
+| strcmp() | Compares two strings. |
+| strncmp() | Compares first n characters of two strings. |
+| strchr() | Find the first occurrence of the given character in the string. |
+| strrchr() | Finds the last occurrence of the given characters in the string. |
+| strstr() | Find the given substring in the string. |
+| strcspn() | Returns the span of the source string not containing any character of the given string. |
+| strspn() | Returns the span of the source string containing only the characters of the given string. |
+| strpbrk() | Finds the first occurrence of any of the characters of the given string in the source string. |
+| strtok() | Split the given string into tokens based on some character as a delimiter. |
+| strcoll() | Compares two strings that are passed. |
+| memset() | Initialize a block of memory with the given character. |
+| memcmp() | Compares two blocks of memory. |
+| memcpy() | Copy two blocks of memory. |
+| memmove() | Moves two blocks of memory. |
+| memchr() | Finds the given character in the block of memory. |
 | access (man 2 access) |
 | chdir (man 2 chdir) |
 | close (man 2 close) |
