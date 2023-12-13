@@ -6,6 +6,8 @@
  * Return: 0
  */
 
+extern char **environ;
+
 int main(void)
 {
 	if (isatty(STDIN_FILENO))
@@ -21,7 +23,19 @@ int main(void)
 
 			if (read != -1)
 			{
-				printf("%s\n", lineptr);
+				if (strcmp(lineptr, "env\n") == 0)
+				{
+					char **env = environ;
+					while (*env != NULL)
+					{
+						printf("%s\n", *env);
+						env++;
+					}
+				}
+				else
+				{
+					printf("%s\n", lineptr);
+				}
 				free(lineptr);
 				lineptr = NULL;
 			}
