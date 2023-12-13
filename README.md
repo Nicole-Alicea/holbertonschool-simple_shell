@@ -80,43 +80,62 @@ For this simple shell project, we were divided into groups of three and given th
 
 Functions and System Calls+                 |Description
 |-----------------------------|----------------------------------------------|
-| all functions from string.h |
-| access (man 2 access) |
-| chdir (man 2 chdir) |
-| close (man 2 close) |
-| closedir (man 3 closedir) |
-| execve (man 2 execve) |
-| exit (man 3 exit) |
-| _exit (man 2 _exit) |
-| fflush (man 3 fflush) |
-| fork (man 2 fork) |
-| free (man 3 free) |
-| getcwd (man 3 getcwd) |
-| getline (man 3 getline) |
-| getpid (man 2 getpid) |
-| isatty (man 3 isatty) |
-| kill (man 2 kill) |
-| malloc (man 3 malloc) |
-| open (man 2 open) |
-| opendir (man 3 opendir) |
-| perror (man 3 perror) |
-| printf (man 3 printf) |
-| fprintf (man 3 fprintf) |
-| vfprintf (man 3 vfprintf) |
-| sprintf (man 3 sprintf) |
-| putchar (man 3 putchar) |
-| read (man 2 read) |
-| readdir (man 3 readdir) |
-| signal (man 2 signal) |
-| stat (__xstat) (man 2 stat) |
-| lstat (__lxstat) (man 2 lstat) |
-| fstat (__fxstat) (man 2 fstat) |
-| strtok (man 3 strtok) |
-| wait (man 2 wait) |
-| waitpid (man 2 waitpid) |
-| wait3 (man 2 wait3) |
-| wait4 (man 2 wait4) |
-| write (man 2 write) |
+| strlen() | Returns the length of the string. |
+| strcpy() | Copy one string to another. |
+| strncpy() | Copy first n characters of one string to another. |
+| strcat() | Concatenates two strings. |
+| strncat() | Concatenates first n characters of one string to another. |
+| strcmp() | Compares two strings. |
+| strncmp() | Compares first n characters of two strings. |
+| strchr() | Find the first occurrence of the given character in the string. |
+| strrchr() | Finds the last occurrence of the given characters in the string. |
+| strstr() | Find the given substring in the string. |
+| strcspn() | Returns the span of the source string not containing any character of the given string. |
+| strspn() | Returns the span of the source string containing only the characters of the given string. |
+| strpbrk() | Finds the first occurrence of any of the characters of the given string in the source string. |
+| strtok() | Split the given string into tokens based on some character as a delimiter. |
+| strcoll() | Compares two strings that are passed. |
+| memset() | Initialize a block of memory with the given character. |
+| memcmp() | Compares two blocks of memory. |
+| memcpy() | Copy two blocks of memory. |
+| memmove() | Moves two blocks of memory. |
+| memchr() | Finds the given character in the block of memory. |
+| access (man 2 access) | Checks to see if the file or directory specified by path exists and if it can be accessed with the file access permissions given by amode. |
+| chdir (man 2 chdir) | Changes the current working directory to path, which can be relative to the current working directory or an absolute path name. |
+| close (man 2 close) | Closes a file descriptor, so that it no longer refers to any file and may be reused.
+| closedir (man 3 closedir) | Closes the directory stream associated with dirp. |
+| execve (man 2 execve) | Executes the program referred to by pathname. |
+| exit (man 3 exit) | Causes normal process termination and the least significant byte of status is returned to the parent. |
+| _exit (man 2 _exit) | Terminates the calling process "immediately". |
+| fflush (man 3 fflush) | Forces a write of all user-space buffered data for the given output or update stream via the stream's underlying write function. |
+| fork (man 2 fork) | Creates a new process by duplicating the calling process. |
+| free (man 3 free) | Frees the memory space pointed to by ptr, which must have been returned by a previous call to malloc(), calloc(),  or  realloc(). |
+| getcwd (man 3 getcwd) | Copies an absolute pathname of the current working directory to the array pointed to by buf, which is of length size. |
+| getline (man 3 getline) | Reads an entire line from stream, storing the address of the buffer containing the text into *lineptr. |
+| getpid (man 2 getpid) | Returns the process ID (PID) of the calling process. |
+| isatty (man 3 isatty) | Tests whether fd is an open file descriptor referring to a terminal. |
+| kill (man 2 kill) | Can be used to send any signal to any process group or process. |
+| malloc (man 3 malloc) | Allocates size bytes and returns a pointer to the allocated memory. |
+| open (man 2 open) | Opens the file specified by pathname. |
+| opendir (man 3 opendir) | Opens a directory stream corresponding to the directory name, and returns a pointer to the directory stream. |
+| perror (man 3 perror) | Produces a message on standard error describing the last error encountered during a call to a system or library function. |
+| printf (man 3 printf) | Writes output to stdout. |
+| fprintf (man 3 fprintf) | Writes output to the given output stream. |
+| vfprintf (man 3 vfprintf) | Writes output to the given output stream. |
+| sprintf (man 3 sprintf) | writes to the character string str. |
+| putchar (man 3 putchar) | Writes a single character to the standard output stream, stdout. |
+| read (man 2 read) | Attempts to read up to count bytes from file descriptor fd into the buffer starting at buf. |
+| readdir (man 3 readdir) | Returns a pointer to a dirent structure representing the next directory entry in the directory stream pointed to by dirp. |
+| signal (man 2 signal) | Returns the previous value of the signal handler. |
+| stat (__xstat) (man 2 stat) | Retrieves information about the file pointed to by pathname. |
+| lstat (__lxstat) (man 2 lstat) | Identical to stat(), except that if pathname is a symbolic link, then it returns information about the link  it‐self, not the file that the link refers to. |
+| fstat (__fxstat) (man 2 fstat) | Identical to stat(), except that the file about which information is to be retrieved is specified by the file descriptor fd. |
+| strtok (man 3 strtok) | Breaks a string into a sequence of zero or more nonempty tokens. |
+| wait (man 2 wait) | Suspends execution of the calling thread until one of its children terminates. |
+| waitpid (man 2 waitpid) | Suspends execution of the calling thread until a child specified by pid argument has changed state. |
+| wait3 (man 2 wait3) | Allows the calling process to obtain status information for specified child processes. |
+| wait4 (man 2 wait4) | Suspends execution of the calling thread until status information from one of ots terminated child processes is available, or until the delivery of a signal whose action is either to terminate the process or execute a signal handler. |
+| write (man 2 write) | Writes to an open file. |
 
 ### Compilation
 The program will be compiled this way:
@@ -128,6 +147,9 @@ The program will be compiled this way:
 Name           |
 |---------------------|
 | README.md |
+| AUTHORS |
+| man_1_simple_shell |
+| simple_shell.c |
 
 #### Tasks
 
