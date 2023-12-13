@@ -1,9 +1,15 @@
 #ifndef MAIN_H
 #define MAIN_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
+#include <sys/stat.h>
 
-#endif
+
+/* Function declarations */
+int command_exists(char *cmd);
+int find_command_in_path(char *cmd, char *fullpath);
+void handle_cat(char *filename);
+void handle_echo(char **argv);
+
+#endif /* MAIN.H */
+
+
