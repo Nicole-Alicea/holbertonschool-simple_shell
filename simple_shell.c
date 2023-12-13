@@ -1,55 +1,133 @@
-#include "main.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/wait.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
-/**
- * main - entry point
- *
- * Return: 0
- */
+#define ANSI_COLOR_RED     "\x1b[31m"
+#define ANSI_COLOR_RESET   "\x1b[0m"
 
-extern char **environ; /*code wouldn't compile unless I declared environ as an external char. I'm looking for another way to handle the env built in*/
+#define MAX_ARGS 10
+#define MAX_PATH_LENGTH 1024
 
-int main(void) /*I'm thinking we might have to put argc and argv*/
-{
-	if (isatty(STDIN_FILENO)) /*This checks if file descriptor refers to a terminal(shell is running in interactive mode)*/
-	{
-		char *prompt = "Input command: ", *lineptr = NULL;
-		size_t n = 0;
-		ssize_t read;
+/* Check if a command exists at the given path */
+int command_exists(char *cmd) {
+    struct stat st;
+    return ((stat(cmd, &st) == 0));
+}
 
-		while (1) /*This creates an infinite loop so that a prompt will keep appearing after a command has been executed.*/
-		{
-			printf("%s", prompt); /*prints the prompt*/
-			read = getline(&lineptr, &n, stdin); /*reads the user input*/
+/* Find a command in the directories specified by the PATH environment variable */
+int find_command_in_path(char *cmd, char *fullpath) {
+    char *path = getenv("PATH");
+    char pth[MAX_PATH_LENGTH];
+    char *token;
 
-			if (read != -1) /*checks if the input is not EOF*/
-			{
-				if (strcmp(lineptr, "env\n") == 0)
-				{
-					char **env = environ;
-					while (*env != NULL)
-					{
-						printf("%s\n", *env); /*iterates through environ and prints each one*/
-						env++;
-					}
-				}
-				else
-				{
-					printf("%s", lineptr);
-				}
-				free(lineptr); /*frees the memory allocated for the user input*/
-				lineptr = NULL; /*this is here to deal with the core dump error I kept getting. It resets the pointer to NUll after freeing memory.*/
-			}
-			else /*reaches EOF*/
-			{
-				printf("End of file\n");
-				free(lineptr);
-				return (0);
-			}
-		}
-	}
-	else
-	{
-		return (-1);
-	}
-	return (0);
+    strcpy(pth, path);
+    token = strtok(pth, ":");
+
+    while (token != NULL) {
+        sprintf(fullpath, "%s/%s", token, cmd);
+        if (command_exists(fullpath)) {
+            return ((1)); /* Command found */
+        }
+        token = strtok(NULL, ":");
+    }
+    return ((0)); /* Command not found */
+}
+
+/* Handle the 'cat' command */
+void handle_cat(char *filename) {
+    FILE *file = fopen(filename, "r");
+    if (file == NULL) {
+        perror("fopen");
+        return;
+    }
+
+    char line[1024];
+    while (fgets(line, sizeof(line), file) != NULL) {
+        printf("%s", line);
+    }
+
+    fclose(file);
+}
+
+int main() {
+    char *command = NULL;
+    size_t len = 0;
+    ssize_t nread;
+    char *argv[MAX_ARGS];
+    char fullpath[MAX_PATH_LENGTH];
+    int is_interactive = isatty(STDIN_FILENO);
+
+    while (1) {
+        /* Display the prompt only in interactive mode */
+        if (is_interactive) {
+            printf(ANSI_COLOR_RED "simple_shell_NJR($) " ANSI_COLOR_RESET);
+        }
+
+        /* Read a line of input using getline */
+        nread = getline(&command, &len, stdin);
+        if (nread == -1) {
+            free(command);
+            if (is_interactive) {
+                printf("\n");
+            }
+            break; /* Exit on EOF or read error */
+        }
+
+        /* Remove newline character from the end of the command */
+        if (command[nread - 1] == '\n') {
+            command[nread - 1] = '\0';
+        }
+
+        /* Continue if command is empty */
+        if (strlen(command) == 0) {
+            continue;
+        }
+
+        /* Exit the shell if the command is 'exit' */
+        if (strcmp(command, "exit") == 0) {
+            free(command);
+            exit(0);
+        }
+
+        /* Split the command into arguments */
+        int argc = 0;
+        argv[argc] = strtok(command, " ");
+        while (argv[argc] != NULL && argc < MAX_ARGS - 1) {
+            argv[++argc] = strtok(NULL, " ");
+        }
+        argv[argc] = NULL;
+
+        /* Handle 'cat' command */
+        if (strcmp(argv[0], "cat") == 0 && argv[1] != NULL) {
+            handle_cat(argv[1]);
+            continue;
+        }
+
+        /* Check if the command exists in PATH */
+        if (!find_command_in_path(argv[0], fullpath)) {
+            printf("%s: command not found\n", argv[0]);
+            continue;
+        }
+
+        /* Fork a new process to execute the command */
+        pid_t pid = fork();
+        if (pid == -1) {
+            perror("fork");
+            continue;
+        }
+        if (pid == 0) { /* Child process */
+            execv(fullpath, argv); /* Execute the command */
+            perror("execv"); /* Executed only if execv fails */
+            exit(EXIT_FAILURE);
+        } else { /* Parent process */
+            wait(NULL); /* Wait for the child process to finish */
+        }
+    }
+
+    free(command);
+    return (0);
 }
