@@ -301,6 +301,6 @@ Simple shell 1.0 +
 
 ### Authors &copy;
 
-- Jeremy Cardona
+- Jeremy Cardona Crespo
 - Nicole Alicea Plumey
 - Raphael Santos
