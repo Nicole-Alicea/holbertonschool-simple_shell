@@ -34,15 +34,16 @@ int main(void)
 				}
 				else
 				{
-					printf("%s\n", lineptr);
+					printf("%s", lineptr);
 				}
 				free(lineptr);
 				lineptr = NULL;
 			}
-			else if (read == -1)
+			else
 			{
 				printf("End of file\n");
-				return (-1);
+				free(lineptr);
+				return (0);
 			}
 		}
 	}
