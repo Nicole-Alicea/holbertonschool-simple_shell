@@ -10,21 +10,37 @@ int command_exists(char *cmd)
 /* Find a command in the directories specified by the PATH environment variable */
 int find_command_in_path(char *cmd, char *fullpath)
 {
-	char *path = getenv("PATH"), *token, pth[MAX_PATH_LENGTH];
-	
-	strcpy(pth, path);
-	token = strtok(pth, ":");
-	
-	while (token != NULL)
-	{
-		sprintf(fullpath, "%s/%s", token, cmd);
-		if (command_exists(fullpath))
-		{
-			return (1); /* Command found */
-		}
-		token = strtok(NULL, ":");
-	}
-	return (0); /* Command not found */
+    struct stat st;
+
+    /* Check if cmd is an absolute path */
+    if (cmd[0] == '/')
+    {
+        if (stat(cmd, &st) == 0)
+        {
+            strcpy(fullpath, cmd);
+            return 1;
+        }
+        else
+        {
+	  return (0);
+        }
+    }
+
+    char *path = getenv("PATH"), *token, pth[MAX_PATH_LENGTH];
+    strcpy(pth, path);
+    token = strtok(pth, ":");
+
+    while (token != NULL)
+    {
+        sprintf(fullpath, "%s/%s", token, cmd);
+        if (stat(fullpath, &st) == 0)
+        {
+	  return 1; /* Command found */
+        }
+        token = strtok(NULL, ":");
+    }
+
+    return (0); /* Command not found*/
 }
 
 /* Handle the 'cat' command */
@@ -129,5 +145,6 @@ int main()
 		}
 	}
 	free(command);
+	command = NULL;
 	return (0);
 }
