@@ -1,0 +1,4 @@
+#!/bin/bash
+ssh-add ../../githubkey
+ssh -T git@github.com
+bash -i
