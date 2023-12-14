@@ -1,4 +1,12 @@
 #include "main.h"
+#include <sys/stat.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/wait.h>
+#include <sys/types.h>
+
 
 /* Check if a command exists at the given path */
 int command_exists(char *cmd)
