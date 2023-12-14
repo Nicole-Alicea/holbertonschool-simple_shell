@@ -1,6 +1,6 @@
 # **READ ME!** 
 ## Concept: everything you need to know to start coding your own shell!
-======================
+-----
 ## PID & PPID
 - process id and parent process id
 
