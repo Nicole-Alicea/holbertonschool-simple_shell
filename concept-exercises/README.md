@@ -1,5 +1,6 @@
-# **READ ME!** - Concept: everything you need to know to start coding your own shell!
-=================================================================================
+# **READ ME!** -
+## Concept: everything you need to know to start coding your own shell!
+============================================================
 ## PID & PPID
 - process id and parent process id
 
@@ -11,10 +12,13 @@ man getppid
 man getpid
 
 ### Exercises - PID, PPID
-0. getppid
+0. getppid [getppid.c](./getppid.c)
 - Write a program that prints the PID of the parent process.
 - Run your program several times within the same shell. It should be the same. 
 - Does echo $$ print the same value? Why?
+1. /proc/sys/kernel/pid\_max [print max id value](./max_process.sh)
+- write a shell script that prints the maximum value a process ID can be.
+
 --------------------------
 ## Arguments
 - The command line arguments are passed through the main function: int main(int ac, char /*/*av);
