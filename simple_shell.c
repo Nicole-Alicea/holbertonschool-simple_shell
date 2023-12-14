@@ -83,7 +83,7 @@ int main()
 		/* Display the prompt only in interactive mode */
 		if (is_interactive)
 		{
-			printf(ANSI_COLOR_RED "simple_shell_NJR($) " ANSI_COLOR_RESET);
+			printf("simple_shell_NJR($) ");
 		}
 		/* Read a line of input using getline */
 		nread = getline(&command, &len, stdin);
