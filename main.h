@@ -2,8 +2,7 @@
 #define MAIN_H
 
 
-#define ANSI_COLOR_RED     "\x1b[31m"
-#define ANSI_COLOR_RESET   "\x1b[0m"
+
 
 #define MAX_ARGS 10
 #define MAX_PATH_LENGTH 1024
