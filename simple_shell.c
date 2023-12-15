@@ -1,4 +1,12 @@
 #include "main.h"
+#include <sys/stat.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/wait.h>
+#include <sys/types.h>
+
 
 /* Check if a command exists at the given path */
 int command_exists(char *cmd)
@@ -10,22 +18,40 @@ int command_exists(char *cmd)
 /* Find a command in the directories specified by the PATH environment variable */
 int find_command_in_path(char *cmd, char *fullpath)
 {
-	char *path = getenv("PATH"), *token, pth[MAX_PATH_LENGTH];
-	
-	strcpy(pth, path);
-	token = strtok(pth, ":");
-	
-	while (token != NULL)
-	{
-		sprintf(fullpath, "%s/%s", token, cmd);
-		if (command_exists(fullpath))
-		{
-			return (1); /* Command found */
-		}
-		token = strtok(NULL, ":");
-	}
-	return (0); /* Command not found */
+    struct stat st;
+    char *path, *token, pth[MAX_PATH_LENGTH];
+
+    /* Check if cmd is an absolute path */
+    if (cmd[0] == '/')
+    {
+        if (stat(cmd, &st) == 0)
+        {
+            strcpy(fullpath, cmd);
+            return (1);
+        }
+        else
+        {
+	  return (0);
+        }
+    }
+
+    path = getenv("PATH");
+    strcpy(pth, path);
+    token = strtok(pth, ":");
+
+    while (token != NULL)
+    {
+        sprintf(fullpath, "%s/%s", token, cmd);
+        if (stat(fullpath, &st) == 0)
+        {
+	  return (1); /* Command found */
+        }
+        token = strtok(NULL, ":");
+    }
+
+    return (0); /* Command not found */
 }
+
 
 /* Handle the 'cat' command */
 void handle_cat(char *filename)
@@ -57,7 +83,7 @@ int main()
 		/* Display the prompt only in interactive mode */
 		if (is_interactive)
 		{
-			printf(ANSI_COLOR_RED "simple_shell_NJR($) " ANSI_COLOR_RESET);
+			printf("simple_shell_NJR($) ");
 		}
 		/* Read a line of input using getline */
 		nread = getline(&command, &len, stdin);
@@ -129,5 +155,6 @@ int main()
 		}
 	}
 	free(command);
+	command = NULL;
 	return (0);
 }
