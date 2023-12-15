@@ -1,7 +1,9 @@
 #ifndef MAIN_H
 #define MAIN_H
 
-
+/*
+ * interactive mode definitions here
+ **/
 #define ANSI_COLOR_RED     "\x1b[31m"
 #define ANSI_COLOR_RESET   "\x1b[0m"
 
