@@ -1,34 +1,30 @@
 #include "main.h"
-#include <sys/stat.h>
-#include <string.h>
-#include <sys/types.h>
+
+void display_prompt()
+{
+	printf("simple_shell_NJR($) ");
+	fflush(stdout);
+}
 
 void execute_command(char *command)
 {
 	pid_t pid = fork();
 
-	if (pid == -1)
+	if (pid < 0)
 	{
-		perror("fork");
+		perror("Fork error");
+		exit(EXIT_FAILURE);
 	}
 	else if (pid == 0)
 	{
-		char **args = malloc(2 * sizeof(char *));
-		if (args == NULL)
-		{
-			perror("malloc");
-			_exit(EXIT_FAILURE);
-		}
+		char *args[2];
 		args[0] = command;
 		args[1] = NULL;
 
-		if (execve(command, args, NULL) == -1)
-		{
-			perror("execve");
-			free(args);
-			_exit(EXIT_FAILURE);
-		}
-		free(args);
+		execvp(command, args);
+
+		perror("Command execution error");
+		_exit(EXIT_FAILURE);
 	}
 	else
 	{
@@ -38,40 +34,19 @@ void execute_command(char *command)
 
 int main()
 {
-	char input[MAX_INPUT_SIZE];
-	size_t input_length;
+	char input[MAX_COMMAND_LENGTH];
 
 	while (1)
 	{
-		printf("simple_shell_NJR($) ");
+		display_prompt();
 
 		if (fgets(input, sizeof(input), stdin) == NULL)
 		{
-			if (feof(stdin))
-			{
-				printf("\n");
-				break;
-			}
-			else
-			{
-				perror("fgets");
-				exit(EXIT_FAILURE);
-			}
-		}
-
-		input_length = strlen(input);
-
-		if (input_length > 0 && input[input_length - 1] == '\n')
-		{
-			input[input_length - 1] = '\0';
-		}
-
-		if (strcmp(input, "exit") == 0)
-		{
-			printf("Exiting the shell.\n");
+			printf("\n");
 			break;
 		}
-
+		input[strcspn(input, "\n")] = 0;
+		
 		execute_command(input);
 	}
 

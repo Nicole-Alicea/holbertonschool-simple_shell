@@ -5,7 +5,13 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <dirent.h>
 
+#define MAX_COMMAND_LENGTH 100
 #define MAX_ARGS 10
 #define MAX_PATH_LENGTH 1024
 #define MAX_INPUT_SIZE 1024
