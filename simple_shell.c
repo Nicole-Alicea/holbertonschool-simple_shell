@@ -1,28 +1,99 @@
 #include "main.h"
 #include <sys/stat.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
-#include <sys/wait.h>
 #include <sys/types.h>
+
+void execute_command(char *command)
+{
+	pid_t pid = fork();
+
+	if (pid == -1)
+	{
+		perror("fork");
+	}
+	else if (pid == 0)
+	{
+		char **args = malloc(2 * sizeof(char *));
+		if (args == NULL)
+		{
+			perror("malloc");
+			_exit(EXIT_FAILURE);
+		}
+		args[0] = command;
+		args[1] = NULL;
+
+		if (execve(command, args, NULL) == -1)
+		{
+			perror("execve");
+			free(args);
+			_exit(EXIT_FAILURE);
+		}
+		free(args);
+	}
+	else
+	{
+		wait(NULL);
+	}
+}
+
+int main()
+{
+	char input[MAX_INPUT_SIZE];
+	size_t input_length;
+
+	while (1)
+	{
+		printf("simple_shell_NJR($) ");
+
+		if (fgets(input, sizeof(input), stdin) == NULL)
+		{
+			if (feof(stdin))
+			{
+				printf("\n");
+				break;
+			}
+			else
+			{
+				perror("fgets");
+				exit(EXIT_FAILURE);
+			}
+		}
+
+		input_length = strlen(input);
+
+		if (input_length > 0 && input[input_length - 1] == '\n')
+		{
+			input[input_length - 1] = '\0';
+		}
+
+		if (strcmp(input, "exit") == 0)
+		{
+			printf("Exiting the shell.\n");
+			break;
+		}
+
+		execute_command(input);
+	}
+
+	return (0);
+}
 
 
 /* Check if a command exists at the given path */
-int command_exists(char *cmd)
+/**int command_exists(char *cmd)
 {
 	struct stat st;
 	return ((stat(cmd, &st) == 0));
-}
+}*/
 
 /* Find a command in the directories specified by the PATH environment variable */
-int find_command_in_path(char *cmd, char *fullpath)
+/**int find_command_in_path(char *cmd, char *fullpath)
 {
     struct stat st;
     char *path, *token, pth[MAX_PATH_LENGTH];
-
+*/
     /* Check if cmd is an absolute path */
-    if (cmd[0] == '/')
+   /** if (cmd[0] == '/')
     {
         if (stat(cmd, &st) == 0)
         {
@@ -44,17 +115,17 @@ int find_command_in_path(char *cmd, char *fullpath)
         sprintf(fullpath, "%s/%s", token, cmd);
         if (stat(fullpath, &st) == 0)
         {
-	  return (1); /* Command found */
-        }
+	  return (1);*/ /* Command found */
+        /**}
         token = strtok(NULL, ":");
     }
 
-    return (0); /* Command not found */
-}
+    return (0);*/ /* Command not found */
+/*}*/
 
 
 /* Handle the 'cat' command */
-void handle_cat(char *filename)
+/**void handle_cat(char *filename)
 {
 	char line[1024];
 	FILE *file = fopen(filename, "r");
@@ -80,13 +151,13 @@ int main()
 	
 	while (1)
 	{
-		/* Display the prompt only in interactive mode */
-		if (is_interactive)
+		*//* Display the prompt only in interactive mode */
+		/**if (is_interactive)
 		{
 			printf("simple_shell_NJR($) ");
-		}
+		}*/
 		/* Read a line of input using getline */
-		nread = getline(&command, &len, stdin);
+		/**nread = getline(&command, &len, stdin);
 		if (nread == -1)
 		{
 			free(command);
@@ -94,67 +165,67 @@ int main()
 			{
 				printf("\n");
 			}
-			break; /* Exit on EOF or read error */
-		}
+			break;*/ /* Exit on EOF or read error */
+		/*}*/
 		/* Remove newline character from the end of the command */
-		if (command[nread - 1] == '\n')
+		/**if (command[nread - 1] == '\n')
 		{
 			command[nread - 1] = '\0';
-		}
+		}*/
 		/* Continue if command is empty */
-		if (strlen(command) == 0)
+		/**if (strlen(command) == 0)
 		{
 			continue;
-		}
+		}*/
 		/* Exit the shell if the command is 'exit' */
-		if (strcmp(command, "exit") == 0)
+		/**if (strcmp(command, "exit") == 0)
 		{
 			free(command);
 			exit(0);
-		}
+		}*/
 		/* Split the command into arguments */
-		argc = 0;
+		/**argc = 0;
 		argv[argc] = strtok(command, " ");
 		while (argv[argc] != NULL && argc < MAX_ARGS - 1)
 		{
 			argv[++argc] = strtok(NULL, " ");
 		}
-		argv[argc] = NULL;
+		argv[argc] = NULL;*/
 		
 		/* Handle 'cat' command */
-		if (strcmp(argv[0], "cat") == 0 && argv[1] != NULL)
+		/**if (strcmp(argv[0], "cat") == 0 && argv[1] != NULL)
 		{
 			handle_cat(argv[1]);
 			continue;
-		}
+		}*/
 		/* Check if the command exists in PATH */
-		if (!find_command_in_path(argv[0], fullpath))
+		/**if (!find_command_in_path(argv[0], fullpath))
 		{
 			printf("%s: command not found\n", argv[0]);
 			continue;
-		}
+		}*/
 		
 		/* Fork a new process to execute the command */
-		pid = fork();
+		/**pid = fork();
 		if (pid == -1)
 		{
 			perror("fork");
 			continue;
 		}
 		if (pid == 0)
-		{
+		{*/
 			/* Child process */
-			execv(fullpath, argv); /* Execute the command */
-			perror("execv"); /* Executed only if execv fails */
-			exit(EXIT_FAILURE);
+			/**execv(fullpath, argv);*/ /* Execute the command */
+			/*perror("execv");*/ /* Executed only if execv fails */
+			/**exit(EXIT_FAILURE);
 		}
 		else
-		{
+		{*/
 			/* Parent process */
-			wait(NULL); /* Wait for the child process to finish */
-		}
+			/*wait(NULL);*/ /* Wait for the child process to finish */
+		/**}
 	}
 	free(command);
 	command = NULL;
 	return (0);
-}
+}*/
