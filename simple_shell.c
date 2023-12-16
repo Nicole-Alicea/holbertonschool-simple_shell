@@ -20,7 +20,7 @@ int find_command_in_path(char *cmd, char *fullpath)
 	/* Check if cmd is an absolute path */
 	if (cmd[0] == '/')
 	{
-		if (stat(cmd, &st) == 0)
+		if (stat(cmd, &st) == 0 && S_ISREG(st.st_mode))
 		{
 			strcpy(fullpath, cmd);
 			return (1);
@@ -46,7 +46,7 @@ int find_command_in_path(char *cmd, char *fullpath)
 		if (strlen(token) + strlen(cmd) + 2 <= MAX_PATH_LENGTH)
 		{
 			sprintf(fullpath, "%s/%s", token, cmd);
-			if (stat(fullpath, &st) == 0)
+			if (stat(fullpath, &st) == 0 && S_ISREG(st.st_mode)HHHHHH)
 			{
 				return (1); /* Command found */
 			}
@@ -134,7 +134,7 @@ int main()
 		/* Check if the command exists in PATH */
 		if (!find_command_in_path(argv[0], fullpath))
 		{
-			printf("%s: command not found\n", argv[0]);
+			fprintf(stderr, "%s: command not found\n", argv[0]);
 			continue;
 		}
 		
