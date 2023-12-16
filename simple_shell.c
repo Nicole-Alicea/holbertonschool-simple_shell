@@ -154,8 +154,15 @@ int main()
 		}
 		else
 		{
-			/* Parent process */
-			wait(NULL); /* Wait for the child process to finish */
+			int status;
+			waitpid(pid, &status, 0);
+
+			if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
+			{
+				fprintf(stderr, "Command failed with status %d\n", WEXITSTATUES(status));
+				free(command);
+				exit(WEXITSTATUS(status));
+			}
 		}
 	}
 	free(command);
