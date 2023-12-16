@@ -159,7 +159,7 @@ int main()
 
 			if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
 			{
-				fprintf(stderr, "Command failed with status %d\n", WEXITSTATUES(status));
+				fprintf(stderr, "Command failed with status %d\n", WEXITSTATUS(status));
 				free(command);
 				exit(WEXITSTATUS(status));
 			}
