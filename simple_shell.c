@@ -31,6 +31,13 @@ int find_command_in_path(char *cmd, char *fullpath)
 		}
 	}
 	path = getenv("PATH");
+
+	if (path == NULL)
+	{
+		fprintf(stderr, "Error: PATH environment variable not set.\n");
+		return (0);
+	}
+
 	strcpy(pth, path);
 	token = strtok(pth, ":");
 
