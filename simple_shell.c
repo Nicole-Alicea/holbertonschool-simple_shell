@@ -80,13 +80,12 @@ int main()
 		if (is_interactive)
 		{
 			printf(ANSI_COLOR_RED ANSI_COLOR_RESET);
-      printf("simple_shell_NJR($) ");
+			printf("simple_shell_NJR($) ");
 		}
 		/* Read a line of input using getline */
 		nread = getline(&command, &len, stdin);
 		if (nread == -1)
 		{
-			free(command);
 			if (is_interactive)
 			{
 				printf("\n");
@@ -150,7 +149,7 @@ int main()
 			/* Parent process */
 			wait(NULL); /* Wait for the child process to finish */
 		}
-		free(command);
 	}
+	free(command);
 	return (0);
 }
