@@ -37,15 +37,16 @@ int find_command_in_path(char *cmd, char *fullpath)
 
     while (token != NULL)
     {
-        sprintf(fullpath, "%s/%s", token, cmd);
-        if (stat(fullpath, &st) == 0)
-        {
-	  return (1); /* Command found */
-        }
-        token = strtok(NULL, ":");
-    }
-
-    return (0); /* Command not found */
+	    if (strlen(token) + strlen(cmd) + 2 <= MAX_PATH_LENGTH)
+	    {
+		    sprintf(fullpath, "%s/%s", token, cmd);
+		    if (stat(fullpath, &st) == 0)
+		    {
+			    return (1); /* Command found */
+		    }
+		    token = strtok(NULL, ":");
+	    }
+	    return (0); /* Command not found */
 }
 
 
@@ -142,7 +143,7 @@ int main()
 			/* Child process */
 			execv(fullpath, argv); /* Execute the command */
 			perror("execv"); /* Executed only if execv fails */
-			exit(EXIT_FAILURE);
+			exit(2);
 		}
 		else
 		{
