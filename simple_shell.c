@@ -4,7 +4,7 @@
 int command_exists(char *cmd)
 {
 	struct stat st;
-	return ((stat(cmd, &st) == 0));
+	return (stat(cmd, &st) == 0);
 }
 
 /** 
@@ -14,39 +14,39 @@ int command_exists(char *cmd)
 
 int find_command_in_path(char *cmd, char *fullpath)
 {
-    struct stat st;
-    char *path, *token, pth[MAX_PATH_LENGTH];
+	struct stat st;
+	char *path, *token, pth[MAX_PATH_LENGTH];
 
-    /* Check if cmd is an absolute path */
-   if (cmd[0] == '/')
-    {
-        if (stat(cmd, &st) == 0)
-        {
-            strcpy(fullpath, cmd);
-            return (1);
-        }
-        else
-        {
-	  return (0);
-        }
-    }
+	/* Check if cmd is an absolute path */
+	if (cmd[0] == '/')
+	{
+		if (stat(cmd, &st) == 0)
+		{
+			strcpy(fullpath, cmd);
+			return (1);
+		}
+		else
+		{
+			return (0);
+		}
+	}
+	path = getenv("PATH");
+	strcpy(pth, path);
+	token = strtok(pth, ":");
 
-    path = getenv("PATH");
-    strcpy(pth, path);
-    token = strtok(pth, ":");
-
-    while (token != NULL)
-    {
-	    if (strlen(token) + strlen(cmd) + 2 <= MAX_PATH_LENGTH)
-	    {
-		    sprintf(fullpath, "%s/%s", token, cmd);
-		    if (stat(fullpath, &st) == 0)
-		    {
-			    return (1); /* Command found */
-		    }
-		    token = strtok(NULL, ":");
-	    }
-	    return (0); /* Command not found */
+	while (token != NULL)
+	{
+		if (strlen(token) + strlen(cmd) + 2 <= MAX_PATH_LENGTH)
+		{
+			sprintf(fullpath, "%s/%s", token, cmd);
+			if (stat(fullpath, &st) == 0)
+			{
+				return (1); /* Command found */
+			}
+			token = strtok(NULL, ":");
+		}
+	}
+	return (0); /* Command not found */
 }
 
 
