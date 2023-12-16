@@ -148,6 +148,7 @@ int main()
 		if (pid == 0)
 		{
 			/* Child process */
+			dup2(STDOUT_FILENO, STDERR_FILENO); /*This redirects the stderr to stdout*/
 			execv(fullpath, argv); /* Execute the command */
 			perror("execv"); /* Executed only if execv fails */
 			exit(2);
@@ -157,11 +158,12 @@ int main()
 			int status;
 			waitpid(pid, &status, 0);
 
-			if (WIFEXITED(status) && WEXITSTATUS(status) != 0)
+			if (WIFEXITED(status))
 			{
-				fprintf(stderr, "Command failed with status %d\n", WEXITSTATUS(status));
-				free(command);
-				exit(WEXITSTATUS(status));
+				if (WEXITSTATUS(status) != 0)
+				{
+					fprintf(stderr, "Command failed with status %d\n", WEXITSTATUS(status));
+				}
 			}
 		}
 	}
