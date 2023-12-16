@@ -7,7 +7,11 @@ int command_exists(char *cmd)
 	return ((stat(cmd, &st) == 0));
 }
 
-/* Find a command in the directories specified by the PATH environment variable */
+/** 
+ * find_command_in_path - find command in current path
+ * Description: find the path to 
+ * Find a command in the directories specified by the PATH environment variable */
+
 int find_command_in_path(char *cmd, char *fullpath)
 {
     struct stat st;
@@ -75,7 +79,8 @@ int main()
 		/* Display the prompt only in interactive mode */
 		if (is_interactive)
 		{
-			printf("simple_shell_NJR($) ");
+			printf(ANSI_COLOR_RED ANSI_COLOR_RESET);
+      printf("simple_shell_NJR($) ");
 		}
 		/* Read a line of input using getline */
 		nread = getline(&command, &len, stdin);

@@ -12,6 +12,12 @@
 #include <dirent.h>
 
 #define MAX_COMMAND_LENGTH 100
+/*
+ * interactive mode definitions here
+ **/
+#define ANSI_COLOR_RED     "\x1b[31m"
+#define ANSI_COLOR_RESET   "\x1b[0m"
+
 #define MAX_ARGS 10
 #define MAX_PATH_LENGTH 1024
 #define MAX_INPUT_SIZE 1024
