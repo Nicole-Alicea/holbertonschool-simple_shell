@@ -106,7 +106,7 @@ int main()
 			command[nread - 1] = '\0';
 		}
 		/* Continue if command is empty or NULL */
-		if (command == NULL || strlen(command) == 0)
+		if (strlen(command) == 0)
 		{
 			continue;
 		}
@@ -115,6 +115,10 @@ int main()
 		{
 			free(command);
 			exit(0);
+		}
+		if (command == NULL)
+		{
+			continue;
 		}
 		/* Split the command into arguments */
 		argc = 0;
