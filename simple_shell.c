@@ -46,7 +46,7 @@ int find_command_in_path(char *cmd, char *fullpath)
 		if (strlen(token) + strlen(cmd) + 2 <= MAX_PATH_LENGTH)
 		{
 			sprintf(fullpath, "%s/%s", token, cmd);
-			if (stat(fullpath, &st) == 0 && S_ISREG(st.st_mode)HHHHHH)
+			if (stat(fullpath, &st) == 0 && S_ISREG(st.st_mode))
 			{
 				return (1); /* Command found */
 			}
