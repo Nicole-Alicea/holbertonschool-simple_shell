@@ -153,8 +153,8 @@ int main()
 		{
 			/* Child process */
 			dup2(STDOUT_FILENO, STDERR_FILENO); /*This redirects the stderr to stdout*/
-			execv(fullpath, argv); /* Execute the command */
-			perror("execv"); /* Executed only if execv fails */
+			execvp(argv[0], argv); /* Execute the command */
+			perror("execvp"); /* Executed only if execv fails */
 			exit(2);
 		}
 		else
