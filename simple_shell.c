@@ -105,8 +105,8 @@ int main()
 		{
 			command[nread - 1] = '\0';
 		}
-		/* Continue if command is empty */
-		if (strlen(command) == 0)
+		/* Continue if command is empty or NULL */
+		if (command == NULL || strlen(command) == 0)
 		{
 			continue;
 		}
@@ -132,9 +132,9 @@ int main()
 			continue;
 		}
 		/* Check if the command exists in PATH */
-		if (!find_command_in_path(argv[0], fullpath))
+		if (argv[0] == NULL || !find_command_in_path(argv[0], fullpath))
 		{
-			fprintf(stderr, "%s: command not found\n", argv[0]);
+			fprintf(stderr, "Command not found or empty command\n");
 			continue;
 		}
 		
