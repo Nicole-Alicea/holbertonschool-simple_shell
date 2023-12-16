@@ -50,8 +50,8 @@ int find_command_in_path(char *cmd, char *fullpath)
 			{
 				return (1); /* Command found */
 			}
-			token = strtok(NULL, ":");
 		}
+		token = strtok(NULL, ":");
 	}
 	return (0); /* Command not found */
 }
