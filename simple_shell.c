@@ -64,10 +64,7 @@ void handle_cat(char *filename)
 	FILE *file = fopen(filename, "r");
 	if (file == NULL)
 	{
-		/* 
-		 * perror -  prints descriptive error message to stdout. might not be useful for passing testcases.
-		 *	perror("fopen");
-		*/
+		perror("fopen");
 		return;
 	}
 	while (fgets(line, sizeof(line), file) != NULL)
@@ -99,10 +96,7 @@ int main()
 		{
 			if (is_interactive)
 			{
-				/*
-				 * printf - print newline, might not be useful for passing testcases.
-				* printf("\n");
-				*/
+				printf("\n");
 			}
 			break; /* Exit on EOF or read error */
 		}
