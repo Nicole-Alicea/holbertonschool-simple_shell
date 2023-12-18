@@ -77,6 +77,12 @@ void handle_cat(char *filename)
 	}
 	fclose(file);
 }
+/**
+ * main - entry point, serving as the starting point
+ * for the execution of the shell program 
+ *
+ * Return: 0 (Success)
+ */
 
 int main(int argcount, char **argvector)
 {
@@ -135,6 +141,7 @@ int main(int argcount, char **argvector)
 		{
 			argv[++argc] = strtok(NULL, " ");
 		}
+		/* argcount instead of argc! */
 		argv[argcount] = NULL;
 		
 		/* Handle 'cat' command */
@@ -157,17 +164,25 @@ int main(int argcount, char **argvector)
 			perror("fork");
 			continue;
 		}
-		/* if (pid == 0) 
-		{ */
-		/* Child process */
+		/* Child process - pid == 0 */
 		dup2(STDOUT_FILENO, STDERR_FILENO); /*This redirects the stderr to stdout*/
 		execvp(argv[0], argv); /* Execute the command */
 		perror("execvp"); /* Executed only if execv fails */
 		exit(2);
-		/* } */
+
 		/*
 		else
+		if (pid == 0) [if it equals 0, it's the child process]
 		{
+			[ We write here what we want the Child process to do ]
+			dup2(STDOUT_FILENO, STDERR_FILENO); [This redirects the stderr to stdout]
+			execvp(argv[0], argv); [Execute the command]
+			perror("execvp"); [Executed only if execv fails]
+			exit(2);
+		}
+		else [This is for the parent process. It returns a positive integer greater than 0]
+		{
+			[We write here what we want the parent process to do]
 			int status;
 			waitpid(pid, &status, 0);
 
