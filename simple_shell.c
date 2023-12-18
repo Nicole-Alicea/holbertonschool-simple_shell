@@ -1,78 +1,11 @@
 #include "main.h"
 
-/* Check if a command exists at the given path */
-int command_exists(char *cmd)
-{
-	struct stat st;
-	return (stat(cmd, &st) == 0);
-}
-
-/** 
- * find_command_in_path - find command in current path
- * Description: find the path to 
- * Find a command in the directories specified by the PATH environment variable */
-
-int find_command_in_path(char *cmd, char *fullpath)
-{
-	struct stat st;
-	char *path, *token, pth[MAX_PATH_LENGTH];
-
-	/* Check if cmd is an absolute path */
-	if (cmd[0] == '/')
-	{
-		if (stat(cmd, &st) == 0 && S_ISREG(st.st_mode))
-		{
-			strcpy(fullpath, cmd);
-			return (1);
-		}
-		else
-		{
-			return (0);
-		}
-	}
-	path = getenv("PATH");
-
-	if (path == NULL)
-	{
-		fprintf(stderr, "Error: PATH environment variable not set.\n");
-		return (0);
-	}
-
-	strcpy(pth, path);
-	token = strtok(pth, ":");
-
-	while (token != NULL)
-	{
-		if (strlen(token) + strlen(cmd) + 2 <= MAX_PATH_LENGTH)
-		{
-			sprintf(fullpath, "%s/%s", token, cmd);
-			if (stat(fullpath, &st) == 0 && S_ISREG(st.st_mode))
-			{
-				return (1); /* Command found */
-			}
-		}
-		token = strtok(NULL, ":");
-	}
-	return (0); /* Command not found */
-}
-
-
-/* Handle the 'cat' command */
-void handle_cat(char *filename)
-{
-	char line[1024];
-	FILE *file = fopen(filename, "r");
-	if (file == NULL)
-	{
-		perror("fopen");
-		return;
-	}
-	while (fgets(line, sizeof(line), file) != NULL)
-	{
-		printf("%s", line);
-	}
-	fclose(file);
-}
+/**
+ * main - entry point, serving as the starting point
+ * for the execution of the shell program 
+ *
+ * Return: 0 (Success)
+ */
 
 int main()
 {
@@ -149,16 +82,17 @@ int main()
 			perror("fork");
 			continue;
 		}
-		if (pid == 0)
+		if (pid == 0) /*if it equals 0, it's the child process*/
 		{
-			/* Child process */
+			/* We write here what we want the Child process to do */
 			dup2(STDOUT_FILENO, STDERR_FILENO); /*This redirects the stderr to stdout*/
 			execvp(argv[0], argv); /* Execute the command */
 			perror("execvp"); /* Executed only if execv fails */
 			exit(2);
 		}
-		else
+		else /*This is for the parent process. It returns a positive integer greater than 0*/
 		{
+			/* We write here what we want the parent process to do */
 			int status;
 			waitpid(pid, &status, 0);
 
