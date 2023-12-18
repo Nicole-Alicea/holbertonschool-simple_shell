@@ -9,8 +9,12 @@ int command_exists(char *cmd)
 
 /** 
  * find_command_in_path - find command in current path
- * Description: find the path to 
- * Find a command in the directories specified by the PATH environment variable */
+ * Description: function that finds the command in current path.
+ * Find a command in the directories specified by the PATH environment variable
+ * @cmd: command
+ * @fullpath: fullpath
+ */
+
 
 int find_command_in_path(char *cmd, char *fullpath)
 {
@@ -48,7 +52,7 @@ int find_command_in_path(char *cmd, char *fullpath)
 			sprintf(fullpath, "%s/%s", token, cmd);
 			if (stat(fullpath, &st) == 0 && S_ISREG(st.st_mode))
 			{
-				return (1); /* Command found */
+				return (1);
 			}
 		}
 		token = strtok(NULL, ":");
@@ -74,7 +78,7 @@ void handle_cat(char *filename)
 	fclose(file);
 }
 
-int main()
+int main(int argcount, char **argvector)
 {
 	char *command = NULL, *argv[MAX_ARGS], fullpath[MAX_PATH_LENGTH];
 	size_t len = 0;
@@ -89,6 +93,10 @@ int main()
 		{
 			printf(ANSI_COLOR_RED ANSI_COLOR_RESET);
 			printf("simple_shell_NJR($) ");
+		}
+		else
+		{
+			printf("%s ", argvector[0]);
 		}
 		/* Read a line of input using getline */
 		nread = getline(&command, &len, stdin);
@@ -127,7 +135,7 @@ int main()
 		{
 			argv[++argc] = strtok(NULL, " ");
 		}
-		argv[argc] = NULL;
+		argv[argcount] = NULL;
 		
 		/* Handle 'cat' command */
 		if (strcmp(argv[0], "cat") == 0 && argv[1] != NULL)
@@ -149,14 +157,15 @@ int main()
 			perror("fork");
 			continue;
 		}
-		if (pid == 0)
-		{
-			/* Child process */
-			dup2(STDOUT_FILENO, STDERR_FILENO); /*This redirects the stderr to stdout*/
-			execvp(argv[0], argv); /* Execute the command */
-			perror("execvp"); /* Executed only if execv fails */
-			exit(2);
-		}
+		/* if (pid == 0) 
+		{ */
+		/* Child process */
+		dup2(STDOUT_FILENO, STDERR_FILENO); /*This redirects the stderr to stdout*/
+		execvp(argv[0], argv); /* Execute the command */
+		perror("execvp"); /* Executed only if execv fails */
+		exit(2);
+		/* } */
+		/*
 		else
 		{
 			int status;
@@ -170,6 +179,7 @@ int main()
 				}
 			}
 		}
+		*/
 	}
 	free(command);
 	return (0);
