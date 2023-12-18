@@ -16,7 +16,7 @@ man getpid
 - Write a program that prints the PID of the parent process.
 - Run your program several times within the same shell. It should be the same. 
 - Does echo $$ print the same value? Why?
-1. /proc/sys/kernel/pid\_max [print max id value](./max_process.sh)
+1. /proc/sys/kernel/pid\_max [print max id value](./1-max_process.sh)
 - write a shell script that prints the maximum value a process ID can be.
 
 --------------------------
@@ -26,7 +26,7 @@ man getpid
 * ac is the number of items in av
 - av[0] usually contains the name used to invoke the current program. av[1] is the first argument of the program, av[2] the second, and so on.
 ### Exercises - Arguments
-0. av
+0. av [0-av.c](./0-av.c)
 - Write a program that prints all the arguments, without using ac.
 1. read line
 * Write a program that prints "$ ", wait for the user to enter a command, prints it on the next line.
