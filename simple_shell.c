@@ -62,7 +62,7 @@
 
 
 /* Handle the 'cat' command */
-void handle_cat(char *filename)
+/*void handle_cat(char *filename)
 {
 	char line[1024];
 	FILE *file = fopen(filename, "r");
@@ -76,7 +76,7 @@ void handle_cat(char *filename)
 		printf("%s", line);
 	}
 	fclose(file);
-}
+	}*/
 /**
  * main - entry point, serving as the starting point
  * for the execution of the shell program 
