@@ -18,8 +18,6 @@ int main(void)
 	char fullpath[MAX_PATH_LENGTH];
 	pid_t pid;
 
-	setenv("PATH", "", 1);
-
 	is_interactive = isatty(STDIN_FILENO);
 
 	while (1)
