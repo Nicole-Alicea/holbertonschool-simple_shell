@@ -13,7 +13,7 @@ int main(void)
     char *command = NULL, *cmd, *arg, *start, *end;
     size_t len = 0;
     ssize_t nread;
-    int is_interactive, status;
+    int is_interactive, status, exit_status;
     char fullpath[MAX_PATH_LENGTH];
     pid_t pid;
     char *argv[3];
@@ -74,20 +74,26 @@ int main(void)
             continue;
         }
 
-       pid = fork();
-       if (pid == 0) {
-	 argv[0] = fullpath;
-	 argv[1] = arg;
-	 argv[2] = NULL;
-	 execve(fullpath, argv, environ);
-	 perror("execve");
-	 exit(EXIT_FAILURE);
-       } else if (pid > 0) {
-	 waitpid(pid, &status, 0);
-    
-       } else {
-	 perror("fork");
-       }
+      pid = fork();
+      if (pid == 0) {
+	argv[0] = fullpath;
+	argv[1] = arg;
+	argv[2] = NULL;
+	execve(fullpath, argv, environ);
+	perror("execve");
+	exit(EXIT_FAILURE); 
+      } else if (pid > 0) {
+	waitpid(pid, &status, 0);
+	if (WIFEXITED(status)) {
+	exit_status = WEXITSTATUS(status);
+        if (exit_status != 0) {
+        exit(exit_status); 
+        }
+	}
+      } else {
+	perror("fork");
+      }
+
 
     }
 
