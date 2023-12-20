@@ -4,6 +4,9 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <sys/wait.h>
+#include <ctype.h>
+    
+
 
 extern char **environ;
 
@@ -11,7 +14,7 @@ extern char **environ;
 
 int main(void)
 {
-    char *command = NULL, *cmd, *arg;
+  char *command = NULL, *start, *cmd, *arg, *end;
     size_t len = 0;
     ssize_t nread;
     int is_interactive, i;
@@ -38,13 +41,22 @@ int main(void)
             break;
         }
 
-        if (command[nread - 1] == '\n')
+        /* Initialize variables at the start */
+        start = command;
+        end = command + strlen(command) - 1;
+
+        while (*start && isspace((unsigned char)*start)) start++;
+        while (end > start && isspace((unsigned char)*end)) end--;
+        *(end + 1) = '\0';
+
+        if (*start == '\0')
         {
-            command[nread - 1] = '\0';
+            continue;
         }
 
-        cmd = strtok(command, " ");
+        cmd = strtok(start, " ");
         arg = strtok(NULL, " ");
+
 
         if (cmd && strcmp(cmd, "cat") == 0)
         {
@@ -105,5 +117,4 @@ int main(void)
     free(command);
     return (0);
 }
-
   
