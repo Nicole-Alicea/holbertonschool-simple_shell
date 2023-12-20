@@ -4,7 +4,6 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <sys/wait.h>
-#include <sys/stat.h>
 #include <ctype.h>
 
 extern char **environ;
@@ -15,8 +14,8 @@ int main(void)
     size_t len = 0;
     ssize_t nread;
     int is_interactive, status;
-    pid_t pid;
     char fullpath[MAX_PATH_LENGTH];
+    pid_t pid;
     char *argv[3];
     int i;
 
@@ -40,7 +39,7 @@ int main(void)
         end = command + strlen(command) - 1;
         while (*start && isspace((unsigned char)*start)) start++;
         while (end > start && isspace((unsigned char)*end)) end--;
-        *end = '\0';
+        *(end + 1) = '\0';
 
         if (*start == '\0') continue;
 
@@ -75,24 +74,21 @@ int main(void)
             continue;
         }
 
-        if (!command_exists(fullpath)) {
-            fprintf(stderr, "Command not found: %s\n", fullpath);
-            continue;
-        }
+       pid = fork();
+       if (pid == 0) {
+	 argv[0] = fullpath;
+	 argv[1] = arg;
+	 argv[2] = NULL;
+	 execve(fullpath, argv, environ);
+	 perror("execve");
+	 exit(EXIT_FAILURE);
+       } else if (pid > 0) {
+	 waitpid(pid, &status, 0);
+    
+       } else {
+	 perror("fork");
+       }
 
-        pid = fork();
-        if (pid == 0) {
-            argv[0] = fullpath;
-            argv[1] = arg;
-            argv[2] = NULL;
-            execve(fullpath, argv, environ);
-            perror("execve");
-            exit(EXIT_FAILURE);
-        } else if (pid > 0) {
-            waitpid(pid, &status, 0);
-        } else {
-            perror("fork");
-        }
     }
 
     free(command);
