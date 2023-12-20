@@ -12,11 +12,11 @@ extern char **environ;
 int main(void)
 {
     char *command = NULL, *cmd, *arg, *start, *end;
-    char fullpath[MAX_PATH_LENGTH];
     size_t len = 0;
     ssize_t nread;
     int is_interactive, status;
     pid_t pid;
+    char fullpath[MAX_PATH_LENGTH];
     char *argv[3];
     int i;
 
