@@ -44,21 +44,43 @@ int main()
 			continue;
 		}
 		/* Exit the shell if the command is 'exit' */
-		if (strcmp(command, "exit") == 0)
+		if (command != NULL)
 		{
+			if (strcmp(command, "exit") == 0)
+			{
 			free(command);
-			exit(0);
-		}
-		if (command == NULL)
-		{
-			continue;
+				exit(0);
+			}
+			else
+			{
+				if (strcmp(command, "env") != 0)
+				{
+					argc = 0;
+					argv[0] = strtok(command, " ");
+					if (argv[0] != NULL)
+					{
+						while (argv[argc] != NULL && argc < MAX_ARGS - 1)
+						{
+							argc++;
+							argv[argc] = strtok(NULL, " ");
+						}
+					}
+
+				}
+				else
+				{
+					handle_environment(env);
+				}
+				free(command);
+			}
 		}
 		/* Split the command into arguments */
 		argc = 0;
 		argv[argc] = strtok(command, " ");
 		while (argv[argc] != NULL && argc < MAX_ARGS - 1)
 		{
-			argv[++argc] = strtok(NULL, " ");
+			argc++;
+			argv[argc] = strtok(NULL, " ");
 		}
 		argv[argc] = NULL;
 		
@@ -76,24 +98,24 @@ int main()
 		}
 		
 		/* Fork a new process to execute the command */
-		pid = fork();
+		/**pid = fork();
 		if (pid == -1)
 		{
 			perror("fork");
 			continue;
 		}
-		if (pid == 0) /*if it equals 0, it's the child process*/
-		{
-			/* We write here what we want the Child process to do */
-			dup2(STDOUT_FILENO, STDERR_FILENO); /*This redirects the stderr to stdout*/
-			execvp(argv[0], argv); /* Execute the command */
-			perror("execvp"); /* Executed only if execv fails */
-			exit(2);
+		if (pid == 0)*/ /*if it equals 0, it's the child process*/
+		/**{
+			*//* We write here what we want the Child process to do */
+			/**dup2(STDOUT_FILENO, STDERR_FILENO);*/ /*This redirects the stderr to stdout*/
+			/**execvp(argv[0], argv);*/ /* Execute the command */
+			/**perror("execvp");*/ /* Executed only if execv fails */
+			/**exit(2);
 		}
-		else /*This is for the parent process. It returns a positive integer greater than 0*/
-		{
+		else *//*This is for the parent process. It returns a positive integer greater than 0*/
+		/*{*/
 			/* We write here what we want the parent process to do */
-			int status;
+			/**int status;
 			waitpid(pid, &status, 0);
 
 			if (WIFEXITED(status))
@@ -102,7 +124,7 @@ int main()
 				{
 					fprintf(stderr, "Command failed with status %d\n", WEXITSTATUS(status));
 				}
-			}
+			}*/
 		}
 	}
 	free(command);
