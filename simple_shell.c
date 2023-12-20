@@ -1,12 +1,12 @@
 #include "main.h"
 
 /* Check if a command exists at the given path */
-int command_exists(char *cmd)
+/*int command_exists(char *cmd)
 {
 	struct stat st;
 	return (stat(cmd, &st) == 0);
-}
-
+	}
+*/
 /** 
  * find_command_in_path - find command in current path
  * Description: function that finds the command in current path.
@@ -16,13 +16,13 @@ int command_exists(char *cmd)
  */
 
 
-int find_command_in_path(char *cmd, char *fullpath)
+/*int find_command_in_path(char *cmd, char *fullpath)
 {
 	struct stat st;
-	char *path, *token, pth[MAX_PATH_LENGTH];
+	char *path, *token, pth[MAX_PATH_LENGTH];*/
 
 	/* Check if cmd is an absolute path */
-	if (cmd[0] == '/')
+	/*if (cmd[0] == '/')
 	{
 		if (stat(cmd, &st) == 0 && S_ISREG(st.st_mode))
 		{
@@ -57,8 +57,8 @@ int find_command_in_path(char *cmd, char *fullpath)
 		}
 		token = strtok(NULL, ":");
 	}
-	return (0); /* Command not found */
-}
+	return (0);*/ /* Command not found */
+/*}*/
 
 
 /* Handle the 'cat' command */
