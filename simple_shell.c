@@ -1,55 +1,63 @@
 #include "main.h"
-#include <sys/stat.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/wait.h>
-#include <sys/types.h>
-
 
 /* Check if a command exists at the given path */
 int command_exists(char *cmd)
 {
 	struct stat st;
-	return ((stat(cmd, &st) == 0));
+	return (stat(cmd, &st) == 0);
 }
 
-/* Find a command in the directories specified by the PATH environment variable */
+/** 
+ * find_command_in_path - find command in current path
+ * Description: function that finds the command in current path.
+ * Find a command in the directories specified by the PATH environment variable
+ * @cmd: command
+ * @fullpath: fullpath
+ */
+
+
 int find_command_in_path(char *cmd, char *fullpath)
 {
-    struct stat st;
-    char *path, *token, pth[MAX_PATH_LENGTH];
+	struct stat st;
+	char *path, *token, pth[MAX_PATH_LENGTH];
 
-    /* Check if cmd is an absolute path */
-    if (cmd[0] == '/')
-    {
-        if (stat(cmd, &st) == 0)
-        {
-            strcpy(fullpath, cmd);
-            return (1);
-        }
-        else
-        {
-	  return (0);
-        }
-    }
+	/* Check if cmd is an absolute path */
+	if (cmd[0] == '/')
+	{
+		if (stat(cmd, &st) == 0 && S_ISREG(st.st_mode))
+		{
+			strcpy(fullpath, cmd);
+			return (1);
+		}
+		else
+		{
+			return (0);
+		}
+	}
+	path = getenv("PATH");
 
-    path = getenv("PATH");
-    strcpy(pth, path);
-    token = strtok(pth, ":");
+	if (path == NULL)
+	{
+		fprintf(stderr, "Error: PATH environment variable not set.\n");
+		return (0);
+	}
 
-    while (token != NULL)
-    {
-        sprintf(fullpath, "%s/%s", token, cmd);
-        if (stat(fullpath, &st) == 0)
-        {
-	  return (1); /* Command found */
-        }
-        token = strtok(NULL, ":");
-    }
+	strcpy(pth, path);
+	token = strtok(pth, ":");
 
-    return (0); /* Command not found */
+	while (token != NULL)
+	{
+		if (strlen(token) + strlen(cmd) + 2 <= MAX_PATH_LENGTH)
+		{
+			sprintf(fullpath, "%s/%s", token, cmd);
+			if (stat(fullpath, &st) == 0 && S_ISREG(st.st_mode))
+			{
+				return (1);
+			}
+		}
+		token = strtok(NULL, ":");
+	}
+	return (0); /* Command not found */
 }
 
 
@@ -69,8 +77,14 @@ void handle_cat(char *filename)
 	}
 	fclose(file);
 }
+/**
+ * main - entry point, serving as the starting point
+ * for the execution of the shell program 
+ *
+ * Return: 0 (Success)
+ */
 
-int main()
+int main(int argcount, char **argvector)
 {
 	char *command = NULL, *argv[MAX_ARGS], fullpath[MAX_PATH_LENGTH];
 	size_t len = 0;
@@ -83,13 +97,17 @@ int main()
 		/* Display the prompt only in interactive mode */
 		if (is_interactive)
 		{
+			printf(ANSI_COLOR_RED ANSI_COLOR_RESET);
 			printf("simple_shell_NJR($) ");
+		}
+		else
+		{
+			printf("%s ", argvector[0]);
 		}
 		/* Read a line of input using getline */
 		nread = getline(&command, &len, stdin);
 		if (nread == -1)
 		{
-			free(command);
 			if (is_interactive)
 			{
 				printf("\n");
@@ -101,7 +119,7 @@ int main()
 		{
 			command[nread - 1] = '\0';
 		}
-		/* Continue if command is empty */
+		/* Continue if command is empty or NULL */
 		if (strlen(command) == 0)
 		{
 			continue;
@@ -112,6 +130,10 @@ int main()
 			free(command);
 			exit(0);
 		}
+		if (command == NULL)
+		{
+			continue;
+		}
 		/* Split the command into arguments */
 		argc = 0;
 		argv[argc] = strtok(command, " ");
@@ -119,7 +141,8 @@ int main()
 		{
 			argv[++argc] = strtok(NULL, " ");
 		}
-		argv[argc] = NULL;
+		/* argcount instead of argc! */
+		argv[argcount] = NULL;
 		
 		/* Handle 'cat' command */
 		if (strcmp(argv[0], "cat") == 0 && argv[1] != NULL)
@@ -128,9 +151,9 @@ int main()
 			continue;
 		}
 		/* Check if the command exists in PATH */
-		if (!find_command_in_path(argv[0], fullpath))
+		if (argv[0] == NULL || !find_command_in_path(argv[0], fullpath))
 		{
-			printf("%s: command not found\n", argv[0]);
+			fprintf(stderr, "Command not found or empty command\n");
 			continue;
 		}
 		
@@ -141,20 +164,38 @@ int main()
 			perror("fork");
 			continue;
 		}
-		if (pid == 0)
-		{
-			/* Child process */
-			execv(fullpath, argv); /* Execute the command */
-			perror("execv"); /* Executed only if execv fails */
-			exit(EXIT_FAILURE);
-		}
+		/* Child process - pid == 0 */
+		dup2(STDOUT_FILENO, STDERR_FILENO); /*This redirects the stderr to stdout*/
+		execvp(argv[0], argv); /* Execute the command */
+		perror("execvp"); /* Executed only if execv fails */
+		exit(2);
+
+		/*
 		else
+		if (pid == 0) [if it equals 0, it's the child process]
 		{
-			/* Parent process */
-			wait(NULL); /* Wait for the child process to finish */
+			[ We write here what we want the Child process to do ]
+			dup2(STDOUT_FILENO, STDERR_FILENO); [This redirects the stderr to stdout]
+			execvp(argv[0], argv); [Execute the command]
+			perror("execvp"); [Executed only if execv fails]
+			exit(2);
 		}
+		else [This is for the parent process. It returns a positive integer greater than 0]
+		{
+			[We write here what we want the parent process to do]
+			int status;
+			waitpid(pid, &status, 0);
+
+			if (WIFEXITED(status))
+			{
+				if (WEXITSTATUS(status) != 0)
+				{
+					fprintf(stderr, "Command failed with status %d\n", WEXITSTATUS(status));
+				}
+			}
+		}
+		*/
 	}
 	free(command);
-	command = NULL;
 	return (0);
 }
