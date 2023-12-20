@@ -8,8 +8,7 @@
  */
 
 /* Check if a command exists at the given path */
-int command_exists(char *cmd)
-{
-        struct stat st;
-        return (stat(cmd, &st) == 0);
+int command_exists(char *cmd) {
+    struct stat buffer;
+    return (stat(cmd, &buffer) == 0);
 }
