@@ -4,23 +4,19 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <sys/wait.h>
-#include <ctype.h>
-    
-
+#include <ctype.h> /* Include ctype.h for isspace */
 
 extern char **environ;
 
-/* Main function of the shell */
-
 int main(void)
 {
-  char *command = NULL, *start, *cmd, *arg, *end;
+    char *command = NULL, *cmd, *arg, *start, *end;
     size_t len = 0;
     ssize_t nread;
     int is_interactive, i;
     char fullpath[MAX_PATH_LENGTH];
     pid_t pid;
-    char *argv[2];
+    char *argv[3];  /* Adjusted for possible argument */
 
     is_interactive = isatty(STDIN_FILENO);
 
@@ -41,22 +37,20 @@ int main(void)
             break;
         }
 
-        /* Initialize variables at the start */
+        /* Trim leading and trailing spaces */
         start = command;
         end = command + strlen(command) - 1;
-
         while (*start && isspace((unsigned char)*start)) start++;
         while (end > start && isspace((unsigned char)*end)) end--;
         *(end + 1) = '\0';
 
-        if (*start == '\0')
+        if (*start == '\0') /* Only spaces */
         {
-            continue;
+            continue; /* Skip execution and prompt again */
         }
 
         cmd = strtok(start, " ");
         arg = strtok(NULL, " ");
-
 
         if (cmd && strcmp(cmd, "cat") == 0)
         {
@@ -88,22 +82,28 @@ int main(void)
             continue;
         }
 
-        if (!find_command_in_path(cmd, fullpath))
+        /* Check if cmd is a path */
+        if (cmd[0] == '.' || cmd[0] == '/' || (cmd[0] == '.' && cmd[1] == '.'))
+        {
+            strcpy(fullpath, cmd); /* Use cmd as the path */
+        }
+        else if (!find_command_in_path(cmd, fullpath)) /* Handle PATH */
         {
             fprintf(stderr, "Command not found: %s\n", cmd);
             continue;
         }
 
         pid = fork();
-        if (pid == 0)
+        if (pid == 0) /* Child process */
         {
-            argv[0] = cmd;
-            argv[1] = NULL;
+            argv[0] = fullpath;
+            argv[1] = arg;
+            argv[2] = NULL;
             execve(fullpath, argv, environ);
             perror("execve");
             exit(EXIT_FAILURE);
         }
-        else if (pid > 0)
+        else if (pid > 0) /* Parent process */
         {
             int status;
             waitpid(pid, &status, 0);
@@ -117,4 +117,3 @@ int main(void)
     free(command);
     return (0);
 }
-  
