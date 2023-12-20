@@ -87,6 +87,7 @@ int main(void)
 	if (WIFEXITED(status)) {
 	exit_status = WEXITSTATUS(status);
         if (exit_status != 0) {
+	  free(command);
         exit(exit_status); 
         }
 	}
@@ -94,7 +95,10 @@ int main(void)
 	perror("fork");
       }
 
-
+      if (strcmp(cmd, "exit") == 0) {
+	free(command); 
+	exit(0);
+      }
     }
 
     free(command);
