@@ -144,7 +144,7 @@ void hsh_cd(char *cmdd, char *argg)
 		}
 		else if (strcmp(argg, "-") == 0)
 		{
-			*oldpwd = getenv("OLDPWD");
+			oldpwd = getenv("OLDPWD");
 			if (oldpwd != NULL)
 			{
 				chdir(oldpwd);
