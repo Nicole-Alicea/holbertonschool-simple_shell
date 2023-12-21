@@ -1,5 +1,11 @@
 #include "main.h"
 
+/**
+ * execute_command - exec commands
+ * Description: function to exec bash commands
+ * @cmd: command param
+ * @arg: argument string
+ */
 void execute_command(char *cmd, char *arg)
 {
 	char *argv[3], fullpath[MAX_PATH_LENGTH];
