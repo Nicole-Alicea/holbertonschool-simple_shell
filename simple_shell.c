@@ -61,11 +61,41 @@ int main(void)
 		}
 		if (strcmp(cmd, "cd") == 0)
 		{
-			if (cd(arg) < 0)
+			if (arg == NULL || strcmp(arg, "~") == 0 || strcmp(arg, "$HOME") == 0)
 			{
-				perror("cd");
+				chdir(getenv("HOME"));
+				continue;
 			}
-			continue;
+			else if (strcmp(arg, "-") == 0)
+			{
+				char *oldpwd = getenv("OLDPWD");
+				if (oldpwd != NULL)
+				{
+					chdir(oldpwd);
+					printf("%s\n", oldpwd);
+				}
+				else
+				{
+					fprintf(stderr, "OLDPWD not set\n");
+				}
+				continue;
+			}
+			else if (strcmp(arg, "/tmp") == 0)
+			{
+				chdir(arg);
+				continue;
+			}
+			else
+			{
+				if (cd(arg) < 0)
+				{
+					perror("cd");
+				}
+				continue;
+
+				setenv("OLDPWD", getcwd(NULL, 0), 1);
+				chdir(arg);
+			}
 		}
 		if (strcmp(cmd, "exit") == 0)
 		{
