@@ -1,23 +1,20 @@
 #include "main.h"
 #include <ctype.h>
 
+void hsh_cat(char *, char *);
+void hsh_cd(char *, char *);
+void hsh_exit(char *, char *, char *);
 /**
  * main - prompt shell
  * Description: function that prompts user for command.
  * Return: 0
  */
-
-void hsh_cat(char *, char *);
-void hsh_cd(char *, char *);
-void hsh_exit(void);
-
-
 int main(void)
 {
 	char *command = NULL, *cmd, *arg, *start, *end;
 	size_t len = 0;
 	ssize_t nread;
-	int is_interactive, i;
+	int is_interactive;
 
 	is_interactive = isatty(STDIN_FILENO);
 
@@ -52,37 +49,20 @@ int main(void)
 
 		cmd = strtok(start, " ");
 		arg = strtok(NULL, " ");
-
 		hsh_cat(cmd, arg);
 		hsh_cd(cmd, arg);
-		if (strcmp(cmd, "exit") == 0)
-		{
-			free(command);
-			exit(0);
-				chdir(arg);
-				setenv("OLDPWD", getcwd(NULL, 0), 1);
-				continue;
-			}
-		}
-		if (strcmp(cmd, "env") == 0)
-		{
-			for (i = 0; environ[i] != NULL; i++)
-			{
-				printf("%s\n", environ[i]);
-			}
-			continue;
-		}
-		if (strcmp(cmd, "exit") == 0)
-		{
-			free(command);
-			return (0);
-		}
+		hsh_exit(cmd, arg, command);
 		execute_command(cmd, arg);
 	}
 	free(command);
 	return (0);
 }
-
+/**
+ * hsh_cat - cat command
+ * Description: function that cats
+ * @cmdd: cmd
+ * @argg: arg
+ */
 void hsh_cat(char *cmdd, char *argg)
 {
 	if (*cmdd && strcmp(cmdd, "cat") == 0)
@@ -98,6 +78,12 @@ void hsh_cat(char *cmdd, char *argg)
 		return;
 	}
 }
+/**
+ * hsh_cd - change dir
+ * Description: function to cd command
+ * @cmdd: cmd
+ * @argg: arg
+ */
 void hsh_cd(char *cmdd, char *argg)
 {
 	char *oldpwd;
@@ -142,7 +128,36 @@ void hsh_cd(char *cmdd, char *argg)
 		}
 	}
 }
-void hsh_exit(void)
+/**
+ * hsh_exit - exit loop
+ * Description: function that evals
+ * @cmdd: cmd
+ * @argg: arg
+ * @commandd: command
+ */
+void hsh_exit(char *cmdd, char *argg, char *commandd)
 {
-	return;
+	int i;
+
+	if (strcmp(cmdd, "exit") == 0)
+	{
+		free(commandd);
+		exit(0);
+		chdir(argg);
+		setenv("OLDPWD", getcwd(NULL, 0), 1);
+		return;
+	}
+	if (strcmp(cmdd, "env") == 0)
+	{
+		for (i = 0; environ[i] != NULL; i++)
+		{
+			printf("%s\n", environ[i]);
+		}
+	}
+	if (strcmp(cmdd, "exit") == 0)
+	{
+		free(commandd);
+		exit(0);
+		return;
+	}
 }
