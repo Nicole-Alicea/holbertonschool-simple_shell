@@ -20,7 +20,7 @@ int main(void)
 
 	is_interactive = isatty(STDIN_FILENO);
 
-	while (1)
+	while (1) 
 	{
 		if (is_interactive)
 		{
@@ -56,6 +56,14 @@ int main(void)
 			else
 			{
 				handle_cat(arg);
+			}
+			continue;
+		}
+		if (strcmp(cmd[0], "cd") == 0)
+		{
+			if (cd(cmd[1]) < 0)
+			{
+				perror(cmd[1]);
 			}
 			continue;
 		}
