@@ -1,7 +1,5 @@
 #include "main.h"
 
-extern char **environ;
-
 void execute_command(char *cmd, char *arg)
 {
 	char *argv[3], fullpath[MAX_PATH_LENGTH];
