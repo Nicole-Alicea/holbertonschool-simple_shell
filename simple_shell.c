@@ -153,6 +153,7 @@ void hsh_exit(char *cmdd, char *argg, char *commandd)
 		{
 			printf("%s\n", environ[i]);
 		}
+		exit(2);
 	}
 	if (strcmp(cmdd, "exit") == 0)
 	{
