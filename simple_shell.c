@@ -1,9 +1,5 @@
 #include "main.h"
-#include <ctype.h>
 
-void hsh_cat(char *, char *);
-void hsh_cd(char *, char *);
-void hsh_exit(char *, char *, char *);
 /**
  * main - prompt shell
  * Description: function that prompts user for command.
@@ -49,116 +45,24 @@ int main(void)
 
 		cmd = strtok(start, " ");
 		arg = strtok(NULL, " ");
-		hsh_cat(cmd, arg);
-		hsh_cd(cmd, arg);
-		hsh_exit(cmd, arg, command);
+		
+		if (cmd && strcmp(cmd, "cat") == 0)
+		{
+			if (arg == NULL)
+			{
+				fprintf(stderr, "cat: Missing file name\n");
+			}
+			else
+			{
+				handle_cat(arg);
+			}
+			continue;
+		}
+		handle_cd(cmd);
+		handle_env(cmd);
+		handle_exit(cmd);
 		execute_command(cmd, arg);
 	}
 	free(command);
 	return (0);
-}
-/**
- * hsh_cat - cat command
- * Description: function that cats
- * @cmdd: cmd
- * @argg: arg
- */
-void hsh_cat(char *cmdd, char *argg)
-{
-	if (*cmdd && strcmp(cmdd, "cat") == 0)
-	{
-		if (argg == NULL)
-		{
-			fprintf(stderr, "cat: Missing file name\n");
-		}
-		else
-		{
-			handle_cat(argg);
-		}
-		return;
-	}
-}
-/**
- * hsh_cd - change dir
- * Description: function to cd command
- * @cmdd: cmd
- * @argg: arg
- */
-void hsh_cd(char *cmdd, char *argg)
-{
-	char *oldpwd;
-
-	if (strcmp(cmdd, "cd") == 0)
-	{
-		if (argg == NULL || strcmp(argg, "~") == 0 || strcmp(argg, "$HOME") == 0)
-		{
-			chdir(getenv("HOME"));
-			return;
-		}
-		else if (strcmp(argg, "-") == 0)
-		{
-			oldpwd = getenv("OLDPWD");
-			if (oldpwd != NULL)
-			{
-				chdir(oldpwd);
-				printf("%s\n", oldpwd);
-			}
-			else
-			{
-				fprintf(stderr, "OLDPWD not set\n");
-			}
-			return;
-		}
-		else if (strcmp(argg, "/tmp") == 0)
-		{
-			chdir(argg);
-			return;
-		}
-		else
-		{
-			if (cd(argg) < 0)
-			{
-				perror("cd");
-				return;
-			}
-
-			chdir(argg);
-			setenv("OLDPWD", getcwd(NULL, 0), 1);
-			return;
-		}
-	}
-}
-/**
- * hsh_exit - exit loop
- * Description: function that evals
- * @cmdd: cmd
- * @argg: arg
- * @commandd: command
- */
-void hsh_exit(char *cmdd, char *argg, char *commandd)
-{
-	int i;
-
-	if (strcmp(cmdd, "exit") == 0)
-	{
-		free(commandd);
-		exit(0);
-		chdir(argg);
-		setenv("OLDPWD", getcwd(NULL, 0), 1);
-		return;
-	}
-	if (strcmp(cmdd, "env") == 0)
-	{
-		for (i = 0; environ[i] != NULL; i++)
-		{
-			printf("%s\n", environ[i]);
-		}
-		exit(2);
-	}
-	if (strcmp(cmdd, "exit") == 0)
-	{
-		free(commandd);
-		exit(0);
-		return;
-	}
 }
