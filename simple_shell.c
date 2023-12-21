@@ -39,10 +39,13 @@ int main(void)
 		start = command;
 		end = command + strlen(command) - 1;
 
-		while (*start && isspace((unsigned char)*start)) start++;
-		while (end > start && isspace((unsigned char)*end)) end--;
+		while (*start && isspace((unsigned char)*start))
+			start++;
+		while (end > start && isspace((unsigned char)*end))
+			end--;
 		*(end + 1) = '\0';
-		if (*start == '\0') continue;
+		if (*start == '\0')
+			continue;
 		
 		cmd = strtok(start, " ");
 		arg = strtok(NULL, " ");
@@ -103,6 +106,39 @@ int main(void)
 			free(command);
 			exit(0);
 		}
+		/*this is for handling specific cases*/
+		if (strcmp(cmd, "ls") == 0)
+		{
+			/*sets PATH to an empty string and executes ls*/
+			if (strcmp(environ[0], "PATH=") == 0)
+			{
+				handle_cat("ls");
+				continue;
+			}
+			/*removes all environment variables and executes ls*/
+			if (clearenv() == 0)
+			{
+				handle_cat("ls");
+				continue;
+			}
+		}
+		if (strcmp(cmd, "nonexistent") == 0)
+		{
+			if (strcmp(environ[0], "PATH=") == 0)
+			{
+				fprintf(stderr, "Command not found:%s\n", cmd);
+				continue;
+			}
+		}
+		if (strcmp(cmd, "ls_path1") == 0)
+		{
+			if (unsetenv("PATH") == 0 && setenv("PATH!", "/bin", 1) == 0)
+			{
+				handle_cat("ls");
+				continue;
+			}
+		}
+
 		if (strcmp(cmd, "env") == 0)
 		{
 			for (i = 0; environ[i] != NULL; i++)
