@@ -59,11 +59,11 @@ int main(void)
 			}
 			continue;
 		}
-		if (strcmp(cmd[0], "cd") == 0)
+		if (strcmp(cmd, "cd") == 0)
 		{
-			if (cd(cmd[1]) < 0)
+			if (cd(arg) < 0)
 			{
-				perror(cmd[1]);
+				perror("cd");
 			}
 			continue;
 		}
