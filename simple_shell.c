@@ -90,11 +90,12 @@ int main(void)
 				if (cd(arg) < 0)
 				{
 					perror("cd");
+					continue;
 				}
-				continue;
 
 				setenv("OLDPWD", getcwd(NULL, 0), 1);
 				chdir(arg);
+				continue;
 			}
 		}
 		if (strcmp(cmd, "exit") == 0)
