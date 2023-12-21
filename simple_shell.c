@@ -9,9 +9,8 @@
 
 void hsh_cat(char *, char *);
 void hsh_cd(char *, char *);
-void hsh_exit();
+void hsh_exit(void);
 
-extern char **environ;
 
 int main(void)
 {
@@ -56,7 +55,7 @@ int main(void)
 		cmd = strtok(start, " ");
 		arg = strtok(NULL, " ");
 
-		hsh_cat(cmd, arg);	
+		hsh_cat(cmd, arg);
 		hsh_cd(cmd, arg);
 		if (strcmp(cmd, "exit") == 0)
 		{
@@ -175,4 +174,8 @@ void hsh_cd(char *cmdd, char *argg)
 			return;
 		}
 	}
+}
+void hsh_exit(void)
+{
+	return;
 }

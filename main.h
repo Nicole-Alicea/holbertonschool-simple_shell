@@ -22,6 +22,7 @@
 #define MAX_PATH_LENGTH 1024
 #define MAX_INPUT_SIZE 1024
 
+extern char **environ;
 /* Function declarations */
 int command_exists(char *cmd);
 int find_command_in_path(char *cmd, char *fullpath);
