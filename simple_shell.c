@@ -42,22 +42,10 @@ int main(void)
 		{
 			continue;
 		}
-
 		cmd = strtok(start, " ");
-		arg = strtok(NULL, " ");
-		
-		if (cmd && strcmp(cmd, "cat") == 0)
-		{
-			if (arg == NULL)
-			{
-				fprintf(stderr, "cat: Missing file name\n");
-			}
-			else
-			{
-				handle_cat(arg);
-			}
-			continue;
-		}
+                arg = strtok(NULL, " ");
+
+		handle_cat(cmd);
 		handle_cd(cmd);
 		handle_env(cmd);
 		handle_exit(cmd);

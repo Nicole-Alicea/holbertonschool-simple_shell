@@ -23,6 +23,7 @@ int handle_cd(char *path)
 		else if (strcmp(arg, "-") == 0)
 		{
 			char *oldpwd = getenv("OLDPWD");
+			
 			if (oldpwd != NULL)
 			{
 				chdir(oldpwd);
