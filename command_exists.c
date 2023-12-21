@@ -10,5 +10,6 @@
 int command_exists(char *cmd)
 {
 	struct stat buffer;
+
 	return (stat(cmd, &buffer) == 0);
 }
