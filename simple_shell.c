@@ -12,7 +12,7 @@ int main(void)
 	char *command = NULL, *cmd, *arg, *start, *end;
 	size_t len = 0;
 	ssize_t nread;
-	int is_interactive, i;
+	int is_interactive;
 
 	is_interactive = isatty(STDIN_FILENO);
 
@@ -60,58 +60,9 @@ int main(void)
 			}
 			continue;
 		}
-		if (strcmp(cmd, "cd") == 0)
-		{
-			if (arg == NULL || strcmp(arg, "~") == 0 || strcmp(arg, "$HOME") == 0)
-			{
-				chdir(getenv("HOME"));
-				continue;
-			}
-			else if (strcmp(arg, "-") == 0)
-			{
-				char *oldpwd = getenv("OLDPWD");
-				if (oldpwd != NULL)
-				{
-					chdir(oldpwd);
-					printf("%s\n", oldpwd);
-				}
-				else
-				{
-					fprintf(stderr, "OLDPWD not set\n");
-				}
-				continue;
-			}
-			else if (strcmp(arg, "/tmp") == 0)
-			{
-				chdir(arg);
-				continue;
-			}
-			else
-			{
-				if (cd(arg) < 0)
-				{
-					perror("cd");
-					continue;
-				}
-
-				chdir(arg);
-				setenv("OLDPWD", getcwd(NULL, 0), 1);
-				continue;
-			}
-		}
-		if (strcmp(cmd, "env") == 0)
-		{
-			for (i = 0; environ[i] != NULL; i++)
-			{
-				printf("%s\n", environ[i]);
-			}
-			continue;
-		}
-		if (strcmp(cmd, "exit") == 0)
-		{
-			free(command);
-			return (0);
-		}
+		handle_cd(cmd);
+		handle_env(cmd);
+		handle_exit(cmd);
 		execute_command(cmd, arg);
 	}
 	free(command);
