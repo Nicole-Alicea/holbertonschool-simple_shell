@@ -2,12 +2,14 @@
 #include <ctype.h>
 
 /**
- * main - entry point
- *
+ * main - prompt shell
+ * Description: function that prompts user for command.
  * Return: 0
  */
 
-
+void hsh_cat(char *, char *);
+void hsh_cd(char *, char *);
+void hsh_exit();
 
 extern char **environ;
 
@@ -22,7 +24,7 @@ int main(void)
 
 	is_interactive = isatty(STDIN_FILENO);
 
-	while (1) 
+	while (1)
 	{
 		if (is_interactive)
 		{
@@ -50,61 +52,12 @@ int main(void)
 		{
 			continue;
 		}
-		
+
 		cmd = strtok(start, " ");
 		arg = strtok(NULL, " ");
-		
-		if (cmd && strcmp(cmd, "cat") == 0)
-		{
-			if (arg == NULL)
-			{
-				fprintf(stderr, "cat: Missing file name\n");
-			}
-			else
-			{
-				handle_cat(arg);
-			}
-			continue;
-		}
-		if (strcmp(cmd, "cd") == 0)
-		{
-			if (arg == NULL || strcmp(arg, "~") == 0 || strcmp(arg, "$HOME") == 0)
-			{
-				chdir(getenv("HOME"));
-				continue;
-			}
-			else if (strcmp(arg, "-") == 0)
-			{
-				char *oldpwd = getenv("OLDPWD");
-				if (oldpwd != NULL)
-				{
-					chdir(oldpwd);
-					printf("%s\n", oldpwd);
-				}
-				else
-				{
-					fprintf(stderr, "OLDPWD not set\n");
-				}
-				continue;
-			}
-			else if (strcmp(arg, "/tmp") == 0)
-			{
-				chdir(arg);
-				continue;
-			}
-			else
-			{
-				if (cd(arg) < 0)
-				{
-					perror("cd");
-					continue;
-				}
 
-				chdir(arg);
-				setenv("OLDPWD", getcwd(NULL, 0), 1);
-				continue;
-			}
-		}
+		hsh_cat(cmd, arg);	
+		hsh_cd(cmd, arg);
 		if (strcmp(cmd, "exit") == 0)
 		{
 			free(command);
@@ -162,4 +115,64 @@ int main(void)
 	}
 	free(command);
 	return (0);
+}
+
+void hsh_cat(char *cmdd, char *argg)
+{
+	if (*cmdd && strcmp(cmdd, "cat") == 0)
+	{
+		if (argg == NULL)
+		{
+			fprintf(stderr, "cat: Missing file name\n");
+		}
+		else
+		{
+			handle_cat(argg);
+		}
+		return;
+	}
+}
+void hsh_cd(char *cmdd, char *argg)
+{
+	char *oldpwd;
+
+	if (strcmp(cmdd, "cd") == 0)
+	{
+		if (argg == NULL || strcmp(argg, "~") == 0 || strcmp(argg, "$HOME") == 0)
+		{
+			chdir(getenv("HOME"));
+			return;
+		}
+		else if (strcmp(argg, "-") == 0)
+		{
+			*oldpwd = getenv("OLDPWD");
+			if (oldpwd != NULL)
+			{
+				chdir(oldpwd);
+				printf("%s\n", oldpwd);
+			}
+			else
+			{
+				fprintf(stderr, "OLDPWD not set\n");
+			}
+			return;
+		}
+		else if (strcmp(argg, "/tmp") == 0)
+		{
+			chdir(argg);
+			return;
+		}
+		else
+		{
+			if (cd(argg) < 0)
+			{
+				perror("cd");
+				return;
+			}
+
+			chdir(argg);
+			setenv("OLDPWD", getcwd(NULL, 0), 1);
+			return;
+		}
+	}
 }
