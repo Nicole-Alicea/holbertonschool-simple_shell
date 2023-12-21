@@ -7,10 +7,6 @@
  * Return: 0
  */
 
-
-
-extern char **environ;
-
 int main(void)
 {
 	char *command = NULL, *cmd, *arg, *start, *end;

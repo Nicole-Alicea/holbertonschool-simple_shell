@@ -11,6 +11,8 @@
 #include <fcntl.h>
 #include <dirent.h>
 
+extern char **environ;
+
 #define MAX_COMMAND_LENGTH 100
 /*
  * interactive mode definitions here
