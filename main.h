@@ -11,6 +11,8 @@
 #include <fcntl.h>
 #include <dirent.h>
 
+extern char **environ;
+
 #define MAX_COMMAND_LENGTH 100
 /*
  * interactive mode definitions here
@@ -30,5 +32,6 @@ void handle_cat(char *filename);
 void handle_echo(char **argv);
 int is_path(char *cmd);
 int cd(char *path);
+void execute_command(char *cmd, char *arg);
 
 #endif /* MAIN.H */

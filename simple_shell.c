@@ -14,12 +14,10 @@ void hsh_exit(void);
 
 int main(void)
 {
-	char *command = NULL, *cmd, *arg, *start, *end, *argv[3];
+	char *command = NULL, *cmd, *arg, *start, *end;
 	size_t len = 0;
 	ssize_t nread;
-	int is_interactive, status, exit_status, i;
-	char fullpath[MAX_PATH_LENGTH];
-	pid_t pid;
+	int is_interactive, i;
 
 	is_interactive = isatty(STDIN_FILENO);
 
@@ -61,6 +59,10 @@ int main(void)
 		{
 			free(command);
 			exit(0);
+				chdir(arg);
+				setenv("OLDPWD", getcwd(NULL, 0), 1);
+				continue;
+			}
 		}
 		if (strcmp(cmd, "env") == 0)
 		{
@@ -70,47 +72,12 @@ int main(void)
 			}
 			continue;
 		}
-		if (is_path(cmd))
-		{
-			strcpy(fullpath, cmd);
-		}
-		else if (!find_command_in_path(cmd, fullpath))
-		{
-			fprintf(stderr, "Command not found: %s\n", cmd);
-			continue;
-		}
-		pid = fork();
-		if (pid == 0)
-		{
-			argv[0] = fullpath;
-			argv[1] = arg;
-			argv[2] = NULL;
-			execve(fullpath, argv, environ);
-			perror("execve");
-			exit(EXIT_FAILURE);
-		}
-		else if (pid > 0)
-		{
-			waitpid(pid, &status, 0);
-			if (WIFEXITED(status))
-			{
-				exit_status = WEXITSTATUS(status);
-				if (exit_status != 0)
-				{
-					free(command);
-					exit(exit_status);
-				}
-			}
-		}
-		else
-		{
-			perror("fork");
-		}
 		if (strcmp(cmd, "exit") == 0)
 		{
 			free(command);
 			return (0);
 		}
+		execute_command(cmd, arg);
 	}
 	free(command);
 	return (0);
