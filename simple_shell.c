@@ -1,12 +1,10 @@
 #include "main.h"
-#include <ctype.h>
 
 /**
- * main - entry point
- *
+ * main - prompt shell
+ * Description: function that prompts user for command.
  * Return: 0
  */
-
 int main(void)
 {
 	char *command = NULL, *cmd, *arg, *start, *end;
@@ -16,7 +14,7 @@ int main(void)
 
 	is_interactive = isatty(STDIN_FILENO);
 
-	while (1) 
+	while (1)
 	{
 		if (is_interactive)
 		{
@@ -44,7 +42,7 @@ int main(void)
 		{
 			continue;
 		}
-		
+
 		cmd = strtok(start, " ");
 		arg = strtok(NULL, " ");
 		
