@@ -9,16 +9,17 @@
 
 void handle_cat(char *filename)
 {
-        char line[1024];
-        FILE *file = fopen(filename, "r");
-        if (file == NULL)
-        {
-                perror("fopen");
-                return;
-        }
-        while (fgets(line, sizeof(line), file) != NULL)
-        {
-                printf("%s", line);
-        }
-        fclose(file);
+	char line[1024];
+	FILE *file = fopen(filename, "r");
+
+	if (file == NULL)
+	{
+		perror("fopen");
+		return;
+	}
+	while (fgets(line, sizeof(line), file) != NULL)
+	{
+		printf("%s", line);
+	}
+	fclose(file);
 }
