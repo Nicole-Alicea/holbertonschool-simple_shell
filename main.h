@@ -29,5 +29,6 @@ void handle_cat(char *filename);
 void handle_echo(char **argv);
 int is_path(char *cmd);
 int cd(char *path);
+void execute_command(char *cmd, char *arg);
 
 #endif /* MAIN.H */
