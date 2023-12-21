@@ -93,8 +93,8 @@ int main(void)
 					continue;
 				}
 
-				setenv("OLDPWD", getcwd(NULL, 0), 1);
 				chdir(arg);
+				setenv("OLDPWD", getcwd(NULL, 0), 1);
 				continue;
 			}
 		}
