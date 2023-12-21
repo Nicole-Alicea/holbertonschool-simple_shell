@@ -27,5 +27,7 @@ int command_exists(char *cmd);
 int find_command_in_path(char *cmd, char *fullpath);
 void handle_cat(char *filename);
 void handle_echo(char **argv);
+int is_path(char *cmd);
+int cd(char *path);
 
 #endif /* MAIN.H */

@@ -1,110 +1,34 @@
 #include "main.h"
+#include <ctype.h>
 
-/* Check if a command exists at the given path */
-int command_exists(char *cmd)
-{
-	struct stat st;
-	return (stat(cmd, &st) == 0);
-}
-
-/** 
- * find_command_in_path - find command in current path
- * Description: function that finds the command in current path.
- * Find a command in the directories specified by the PATH environment variable
- * @cmd: command
- * @fullpath: fullpath
- */
-
-
-int find_command_in_path(char *cmd, char *fullpath)
-{
-	struct stat st;
-	char *path, *token, pth[MAX_PATH_LENGTH];
-
-	/* Check if cmd is an absolute path */
-	if (cmd[0] == '/')
-	{
-		if (stat(cmd, &st) == 0 && S_ISREG(st.st_mode))
-		{
-			strcpy(fullpath, cmd);
-			return (1);
-		}
-		else
-		{
-			return (0);
-		}
-	}
-	path = getenv("PATH");
-
-	if (path == NULL)
-	{
-		fprintf(stderr, "Error: PATH environment variable not set.\n");
-		return (0);
-	}
-
-	strcpy(pth, path);
-	token = strtok(pth, ":");
-
-	while (token != NULL)
-	{
-		if (strlen(token) + strlen(cmd) + 2 <= MAX_PATH_LENGTH)
-		{
-			sprintf(fullpath, "%s/%s", token, cmd);
-			if (stat(fullpath, &st) == 0 && S_ISREG(st.st_mode))
-			{
-				return (1);
-			}
-		}
-		token = strtok(NULL, ":");
-	}
-	return (0); /* Command not found */
-}
-
-
-/* Handle the 'cat' command */
-void handle_cat(char *filename)
-{
-	char line[1024];
-	FILE *file = fopen(filename, "r");
-	if (file == NULL)
-	{
-		perror("fopen");
-		return;
-	}
-	while (fgets(line, sizeof(line), file) != NULL)
-	{
-		printf("%s", line);
-	}
-	fclose(file);
-}
 /**
- * main - entry point, serving as the starting point
- * for the execution of the shell program 
+ * main - entry point
  *
- * Return: 0 (Success)
+ * Return: 0
  */
 
-int main(int argcount, char **argvector)
+
+
+extern char **environ;
+
+int main(void)
 {
-	char *command = NULL, *argv[MAX_ARGS], fullpath[MAX_PATH_LENGTH];
+	char *command = NULL, *cmd, *arg, *start, *end, *argv[3];
 	size_t len = 0;
 	ssize_t nread;
-	int is_interactive = isatty(STDIN_FILENO), argc;
+	int is_interactive, status, exit_status, i;
+	char fullpath[MAX_PATH_LENGTH];
 	pid_t pid;
-	
-	while (1)
+
+	is_interactive = isatty(STDIN_FILENO);
+
+	while (1) 
 	{
-		/* Display the prompt only in interactive mode */
 		if (is_interactive)
 		{
-			printf(ANSI_COLOR_RED ANSI_COLOR_RESET);
 			printf("simple_shell_NJR($) ");
 		}
-		else
-		{
-			printf("%s ", argvector[0]);
-		}
-		/* Read a line of input using getline */
+
 		nread = getline(&command, &len, stdin);
 		if (nread == -1)
 		{
@@ -112,89 +36,129 @@ int main(int argcount, char **argvector)
 			{
 				printf("\n");
 			}
-			break; /* Exit on EOF or read error */
+			break;
 		}
-		/* Remove newline character from the end of the command */
-		if (command[nread - 1] == '\n')
-		{
-			command[nread - 1] = '\0';
-		}
-		/* Continue if command is empty or NULL */
-		if (strlen(command) == 0)
+		start = command;
+		end = command + strlen(command) - 1;
+
+		while (*start && isspace((unsigned char)*start))
+			start++;
+		while (end > start && isspace((unsigned char)*end))
+			end--;
+		*(end + 1) = '\0';
+		if (*start == '\0')
 		{
 			continue;
 		}
-		/* Exit the shell if the command is 'exit' */
-		if (strcmp(command, "exit") == 0)
+		
+		cmd = strtok(start, " ");
+		arg = strtok(NULL, " ");
+		
+		if (cmd && strcmp(cmd, "cat") == 0)
+		{
+			if (arg == NULL)
+			{
+				fprintf(stderr, "cat: Missing file name\n");
+			}
+			else
+			{
+				handle_cat(arg);
+			}
+			continue;
+		}
+		if (strcmp(cmd, "cd") == 0)
+		{
+			if (arg == NULL || strcmp(arg, "~") == 0 || strcmp(arg, "$HOME") == 0)
+			{
+				chdir(getenv("HOME"));
+				continue;
+			}
+			else if (strcmp(arg, "-") == 0)
+			{
+				char *oldpwd = getenv("OLDPWD");
+				if (oldpwd != NULL)
+				{
+					chdir(oldpwd);
+					printf("%s\n", oldpwd);
+				}
+				else
+				{
+					fprintf(stderr, "OLDPWD not set\n");
+				}
+				continue;
+			}
+			else if (strcmp(arg, "/tmp") == 0)
+			{
+				chdir(arg);
+				continue;
+			}
+			else
+			{
+				if (cd(arg) < 0)
+				{
+					perror("cd");
+					continue;
+				}
+
+				chdir(arg);
+				setenv("OLDPWD", getcwd(NULL, 0), 1);
+				continue;
+			}
+		}
+		if (strcmp(cmd, "exit") == 0)
 		{
 			free(command);
 			exit(0);
 		}
-		if (command == NULL)
+		if (strcmp(cmd, "env") == 0)
 		{
+			for (i = 0; environ[i] != NULL; i++)
+			{
+				printf("%s\n", environ[i]);
+			}
 			continue;
 		}
-		/* Split the command into arguments */
-		argc = 0;
-		argv[argc] = strtok(command, " ");
-		while (argv[argc] != NULL && argc < MAX_ARGS - 1)
+		if (is_path(cmd))
 		{
-			argv[++argc] = strtok(NULL, " ");
+			strcpy(fullpath, cmd);
 		}
-		/* argcount instead of argc! */
-		argv[argcount] = NULL;
-		
-		/* Handle 'cat' command */
-		if (strcmp(argv[0], "cat") == 0 && argv[1] != NULL)
+		else if (!find_command_in_path(cmd, fullpath))
 		{
-			handle_cat(argv[1]);
+			fprintf(stderr, "Command not found: %s\n", cmd);
 			continue;
 		}
-		/* Check if the command exists in PATH */
-		if (argv[0] == NULL || !find_command_in_path(argv[0], fullpath))
-		{
-			fprintf(stderr, "Command not found or empty command\n");
-			continue;
-		}
-		
-		/* Fork a new process to execute the command */
 		pid = fork();
-		if (pid == -1)
+		if (pid == 0)
 		{
-			perror("fork");
-			continue;
+			argv[0] = fullpath;
+			argv[1] = arg;
+			argv[2] = NULL;
+			execve(fullpath, argv, environ);
+			perror("execve");
+			exit(EXIT_FAILURE);
 		}
-		/* Child process - pid == 0 */
-		dup2(STDOUT_FILENO, STDERR_FILENO); /*This redirects the stderr to stdout*/
-		execvp(argv[0], argv); /* Execute the command */
-		perror("execvp"); /* Executed only if execv fails */
-		exit(2);
-
-		/*
-		else
-		if (pid == 0) [if it equals 0, it's the child process]
+		else if (pid > 0)
 		{
-			[ We write here what we want the Child process to do ]
-			dup2(STDOUT_FILENO, STDERR_FILENO); [This redirects the stderr to stdout]
-			execvp(argv[0], argv); [Execute the command]
-			perror("execvp"); [Executed only if execv fails]
-			exit(2);
-		}
-		else [This is for the parent process. It returns a positive integer greater than 0]
-		{
-			[We write here what we want the parent process to do]
-			int status;
 			waitpid(pid, &status, 0);
-
 			if (WIFEXITED(status))
 			{
-				if (WEXITSTATUS(status) != 0)
+				exit_status = WEXITSTATUS(status);
+				if (exit_status != 0)
 				{
-					fprintf(stderr, "Command failed with status %d\n", WEXITSTATUS(status));
+					free(command);
+					exit(exit_status);
 				}
 			}
 		}
-		*/
+		else
+		{
+			perror("fork");
+		}
+		if (strcmp(cmd, "exit") == 0)
+		{
+			free(command);
+			return (0);
+		}
 	}
 	free(command);
 	return (0);

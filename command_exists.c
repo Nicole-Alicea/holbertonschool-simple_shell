@@ -7,9 +7,9 @@
  * Return: 1 if the file exists and 0 if it doesn't
  */
 
-/* Check if a command exists at the given path */
 int command_exists(char *cmd)
 {
-        struct stat st;
-        return (stat(cmd, &st) == 0);
+	struct stat buffer;
+
+	return (stat(cmd, &buffer) == 0);
 }
