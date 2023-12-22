@@ -32,7 +32,7 @@ int find_command_in_path(char *cmd, char *fullpath);
 void handle_cat(char *filename);
 int is_path(char *cmd);
 int handle_cd(char *path);
-void execute_command(char *cmd, char *arg);
+int execute_command(char *cmd, char *arg, char *fullpath);
 void handle_env(char *cmd);
 void handle_exit(char *cmd);
 
