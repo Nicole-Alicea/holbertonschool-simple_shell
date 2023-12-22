@@ -94,8 +94,6 @@ int execute_command(char *cmd, char *arg, char *fullpath)
  * process_input - Processes user input by tokenizing the command and
  * performing the corresponding action
  * @command: String containing the user input
- * @is_interactive: Integer flag indicating whether the shell is
- * running in interactive mode
  *
  * Return: void
  */
