@@ -65,13 +65,69 @@ int execute_command(char *cmd, char *arg, char *fullpath)
 	return 0;
 }
 
+void process_input(char *command, int is_interactive)
+{
+	char *cmd, *arg, *start, *end, fullpath[MAX_PATH_LENGTH];
+	int i, result;
+	(void)is_interactive;
+
+	start = command;
+	end = command + strlen(command) - 1;
+
+	trim_whitespace(&start, &end);
+
+	if (*start == '\0')
+	{
+		return;
+	}
+	cmd = strtok(start, " ");
+	arg = strtok(NULL, " ");
+
+	if (cmd && strcmp(cmd, "cat") == 0)
+	{
+		if (arg == NULL)
+		{
+			fprintf(stderr, "cat: Missing file name\n");
+		}
+		else
+		{
+			handle_cat(arg);
+		}
+	}
+	else if (strcmp(cmd, "exit") == 0)
+	{
+		free(command);
+		exit(0);
+	}
+	else if (strcmp(cmd, "env") == 0)
+	{
+		for (i = 0; environ[i] != NULL; i++)
+		{
+			printf("%s\n", environ[i]);
+		}
+	}
+	else if (is_path(cmd) || find_command_in_path(cmd, fullpath))
+	{
+		result = execute_command(cmd, arg, fullpath);
+		
+		if (result != 0)
+		{
+			free(command);
+			exit(result);
+		}
+	}
+	else
+	{
+		fprintf(stderr, "Command not found: %s\n", cmd);
+	}
+}
+
 int main(void)
 {
-	char *command = NULL, *cmd, *arg, *start, *end;
+	char *command = NULL;
 	size_t len = 0;
 	ssize_t nread;
-	int is_interactive, i, result;
-	char fullpath[MAX_PATH_LENGTH];
+	int is_interactive;
 
 	is_interactive = isatty(STDIN_FILENO);
 	while (1)
@@ -87,59 +143,9 @@ int main(void)
 			}
 			break;
 		}
-		start = command;
-		end = command + strlen(command) - 1;
+		process_input(command, is_interactive);
 
-		trim_whitespace(&start, &end);
-
-		if (*start == '\0')
-		{
-			continue;
-		}
-		cmd = strtok(start, " ");
-		arg = strtok(NULL, " ");
-
-		if (cmd && strcmp(cmd, "cat") == 0)
-		{
-			if (arg == NULL)
-			{
-				fprintf(stderr, "cat: Missing file name\n");
-			}
-			else
-			{
-				handle_cat(arg);
-			}
-			continue;
-		}
-		if (strcmp(cmd, "exit") == 0)
-		{
-			free(command);
-			exit(0);
-		}
-		if (strcmp(cmd, "env") == 0)
-		{
-			for (i = 0; environ[i] != NULL; i++)
-			{
-				printf("%s\n", environ[i]);
-			}
-			continue;
-		}
-		if (is_path(cmd))
-		{
-			strcpy(fullpath, cmd);
-		}
-		else if (!find_command_in_path(cmd, fullpath))
-		{
-			fprintf(stderr, "Command not found: %s\n", cmd);
-			continue;
-		}
-		result = execute_command(cmd, arg, fullpath);
-		if (result != 0)
-		{
-			free(command);
-			exit(result);
-		}
-		if (strcmp(cmd, "exit") == 0)
+		if (strcmp(strtok(command, " "), "exit") == 0)
 		{
 			free(command);
 			exit(0);
