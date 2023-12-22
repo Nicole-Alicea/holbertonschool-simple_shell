@@ -1,5 +1,12 @@
 #include "main.h"
-
+/**
+ * print_prompt - Prints the shell prompt if the shell
+ * is running in interactive mode
+ * @is_interactive: Integer flag indicating whether the shell is
+ * running in interactive mode
+ *
+ * Return: void
+ */
 void print_prompt(int is_interactive)
 {
 	if (is_interactive)
@@ -7,6 +14,14 @@ void print_prompt(int is_interactive)
 		printf("simple_shell_NJR($) ");
 	}
 }
+
+/**
+ * trim_whitespace - Trims leading and trailing whitespaces from a string
+ * @start: Pointer to the start of the string
+ * @end: Pointer to the end of the string
+ *
+ * Return: void
+ */
 
 void trim_whitespace(char **start, char **end)
 {
@@ -20,6 +35,16 @@ void trim_whitespace(char **start, char **end)
 	}
 	*((*end) + 1) = '\0';
 }
+
+/**
+ * execute_command - Executes a command with arguments in a
+ * child process using 'fork' and 'execve'
+ * @cmd: Command to be executed
+ * @arg: Argument for the command
+ * @fullpath: Full path to the command executable
+ *
+ * Return: Exit status of the command
+ */
 
 int execute_command(char *cmd, char *arg, char *fullpath)
 {
@@ -65,6 +90,16 @@ int execute_command(char *cmd, char *arg, char *fullpath)
 	return (0);
 }
 
+/**
+ * process_input - Processes user input by tokenizing the command and
+ * performing the corresponding action
+ * @command: String containing the user input
+ * @is_interactive: Integer flag indicating whether the shell is
+ * running in interactive mode
+ *
+ * Return: void
+ */
+
 void process_input(char *command, int is_interactive)
 {
 	char *cmd, *arg, *start, *end, fullpath[MAX_PATH_LENGTH];
@@ -109,6 +144,12 @@ void process_input(char *command, int is_interactive)
 		fprintf(stderr, "Command not found: %s\n", cmd);
 }
 
+/**
+ * main - Initializaes variables, reads user input in a loop, and processes
+ * each input using the 'process_input' function
+ *
+ * Return: 0 Success
+ */
 int main(void)
 {
 	char *command = NULL;
