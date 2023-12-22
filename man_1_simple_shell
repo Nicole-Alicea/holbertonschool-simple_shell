@@ -13,15 +13,19 @@ The following commands are supported by simple_shell:
 
 .TP
 .B 'cat'
+Displays the contents of a file.
 
 .TP
 .B 'cd'
+Changes the current working directory.
 
 .TP
 .B 'env'
+Displays the environment variables.
 
 .TP
 .B 'exit'
+Exits the shell.
 
 Other commands are executed using the 'execute_command' function.
 
@@ -29,12 +33,18 @@ Other commands are executed using the 'execute_command' function.
 .B 'command'
 A null-terminated string containing the user-input command.
 
+.SH USAGE
+The shell will display the prompt 'simple_shell_NJR($)' and wait for user input. Enter commands, and the shell will execute them accordingly.
+
 .SH BUGS
 No known bugs at the time of writing this documentation.
+
+.SH RETURN VALUE
+0 upon succesful execution.
 
 .SH AUTHORS
 Nicole Alicea Plumey
 
-Raphael Santos
+Raphael Santos Jimenez
 
-Jeremy Cardona
+Jeremy Cardona Crespo
