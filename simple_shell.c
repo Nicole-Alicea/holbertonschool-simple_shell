@@ -25,7 +25,6 @@ int main(void)
 			break;
 		}
 		start = command;
-		printf("%s", start);
 		end = command + strlen(command) - 1;
 		while (start && isspace((unsigned char)*start))
 		{
@@ -42,7 +41,6 @@ int main(void)
 			continue;
 		}
 		cmd = strtok(start, " ");
-		printf("%s", cmd);
 		arg = strtok(NULL, " ");
 		if (cmd && strcmp(cmd, "cat") == 0)
 		{
