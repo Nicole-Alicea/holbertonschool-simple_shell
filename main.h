@@ -34,6 +34,6 @@ int is_path(char *cmd);
 int handle_cd(char *path);
 void execute_command(char *cmd, char *arg);
 void handle_env(char *cmd);
-int handle_exit(char *arg);
+void handle_exit(char *arg);
 
 #endif /* MAIN.H */
