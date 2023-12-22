@@ -12,7 +12,7 @@ void execute_command(char *cmd, char *arg)
 	int status, exit_status;
 	pid_t pid = fork();
 
-	if (is_path(cmd))
+	if (is_path(cmd) && strlen(cmd) < MAX_PATH_LENGTH)
 		strcpy(fullpath, cmd);
 	else if (!find_command_in_path(cmd, fullpath))
 	{
