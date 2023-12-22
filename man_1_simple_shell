@@ -6,13 +6,31 @@
 .B simple_shell
 
 .SH DESCRIPTION
-simple_shell is a basic program that acts as an interface between the user and the operating system.
+simple_shell is a basic Unix shell that acts as an interface between the user and the operating system, and allows the user to execute commands. The simple_shell takes a command string as input, parses it, and performs the corresponding action based on the command.
 
 .SH COMMANDS
 The following commands are supported by simple_shell:
 
 .TP
-.B 
+.B 'cat'
+
+.TP
+.B 'cd'
+
+.TP
+.B 'env'
+
+.TP
+.B 'exit'
+
+Other commands are executed using the 'execute_command' function.
+
+.SH PARAMETERS
+.B 'command'
+A null-terminated string containing the user-input command.
+
+.SH BUGS
+No known bugs at the time of writing this documentation.
 
 .SH AUTHORS
 Nicole Alicea Plumey
