@@ -7,18 +7,21 @@
  * Return: void
  */
 
-void handle_exit(char *arg)
+void handle_exit(char *cmd)
 {
-	int exit_status;
+	char *command = NULL, *start, *end;
 
-	if (arg != NULL)
-	{
-		exit_status = atoi(arg);
+	start = command;
+	end = command + strlen(command) - 1;
+        while (*start && isspace((unsigned char)*start)) start++;
+        while (end > start && isspace((unsigned char)*end)) end--;
+        *(end + 1) = '\0';
 
-		exit(exit_status);
-	}
-	else
+        cmd = strtok(start, " ");
+
+	if (strcmp(cmd, "exit") == 0)
 	{
-		exit(0);
-	}
+            free(command);
+            exit(0);
+        }
 }
