@@ -15,7 +15,7 @@ void handle_cat(char *filename)
 	start = command;
 	cmd = strtok(start, " ");
 	arg = strtok(NULL, " ");
-	
+
 	if (cmd && strcmp(cmd, "cat") == 0)
 	{
 		if (arg == NULL)
