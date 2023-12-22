@@ -70,15 +70,12 @@ void process_input(char *command, int is_interactive)
 	char *cmd, *arg, *start, *end, fullpath[MAX_PATH_LENGTH];
 	int i, result;
 	(void)is_interactive;
-
 	start = command;
 	end = command + strlen(command) - 1;
 
 	trim_whitespace(&start, &end);
-
 	if (*start == '\0')
 		return;
-
 	cmd = strtok(start, " ");
 	arg = strtok(NULL, " ");
 
@@ -97,14 +94,12 @@ void process_input(char *command, int is_interactive)
 	else if (strcmp(cmd, "env") == 0)
 	{
 		for (i = 0; environ[i] != NULL; i++)
-		{
 			printf("%s\n", environ[i]);
-		}
 	}
 	else if (is_path(cmd) || find_command_in_path(cmd, fullpath))
 	{
 		result = execute_command(cmd, arg, fullpath);
-		
+
 		if (result != 0)
 		{
 			free(command);
