@@ -26,7 +26,7 @@ int execute_command(char *cmd, char *arg, char *fullpath)
 	pid_t pid;
 	int status, exit_status;
 	(void)cmd;
-	
+
 	pid = fork();
 	if (pid == 0)
 	{
@@ -62,7 +62,7 @@ int execute_command(char *cmd, char *arg, char *fullpath)
 	{
 		perror("fork");
 	}
-	return 0;
+	return (0);
 }
 
 void process_input(char *command, int is_interactive)
@@ -77,22 +77,17 @@ void process_input(char *command, int is_interactive)
 	trim_whitespace(&start, &end);
 
 	if (*start == '\0')
-	{
 		return;
-	}
+
 	cmd = strtok(start, " ");
 	arg = strtok(NULL, " ");
 
 	if (cmd && strcmp(cmd, "cat") == 0)
 	{
 		if (arg == NULL)
-		{
 			fprintf(stderr, "cat: Missing file name\n");
-		}
 		else
-		{
 			handle_cat(arg);
-		}
 	}
 	else if (strcmp(cmd, "exit") == 0)
 	{
@@ -117,9 +112,7 @@ void process_input(char *command, int is_interactive)
 		}
 	}
 	else
-	{
 		fprintf(stderr, "Command not found: %s\n", cmd);
-	}
 }
 
 int main(void)
