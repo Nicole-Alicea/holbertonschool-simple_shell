@@ -15,12 +15,10 @@ void handle_exit(char *arg)
 	{
 		exit_status = atoi(arg);
 
-		printf("Exiting with status %d\n", exit_status);
 		exit(exit_status);
 	}
 	else
 	{
-		printf("Exiting without parameter\n");
 		exit(0);
 	}
 }
