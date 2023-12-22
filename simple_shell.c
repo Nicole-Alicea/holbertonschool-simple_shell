@@ -100,14 +100,14 @@ int execute_command(char *cmd, char *arg, char *fullpath)
  * Return: void
  */
 
-void process_input(char *command, int is_interactive)
+void process_input(char *command)
 {
 	char *cmd, *arg, *start, *end, fullpath[MAX_PATH_LENGTH];
 	int i, result;
+
 	start = command;
 	end = command + strlen(command) - 1;
 
-	(void)is_interactive;
 	trim_whitespace(&start, &end);
 	if (*start == '\0')
 		return;
@@ -171,7 +171,7 @@ int main(void)
 			}
 			break;
 		}
-		process_input(command, is_interactive);
+		process_input(command);
 
 		if (strcmp(strtok(command, " "), "exit") == 0)
 		{
