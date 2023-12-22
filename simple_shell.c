@@ -7,6 +7,7 @@ int main(void)
 	int is_interactive, status, exit_status, i;
 	char fullpath[MAX_PATH_LENGTH];
 	pid_t pid;
+
 	is_interactive = isatty(STDIN_FILENO);
 	while (1)
 	{
@@ -24,8 +25,9 @@ int main(void)
 			break;
 		}
 		start = command;
+		printf("%s", start);
 		end = command + strlen(command) - 1;
-		while (*start && isspace((unsigned char)*start))
+		while (start && isspace((unsigned char)*start))
 		{
 			start++;
 		}
@@ -40,6 +42,7 @@ int main(void)
 			continue;
 		}
 		cmd = strtok(start, " ");
+		printf("%s", cmd);
 		arg = strtok(NULL, " ");
 		if (cmd && strcmp(cmd, "cat") == 0)
 		{
@@ -52,13 +55,6 @@ int main(void)
 				handle_cat(arg);
 			}
 			continue;
-		}
-		if (strcmp(cmd, "ls") == 0)
-		{
-			if ("ls" && "PATH" == 0)
-			{
-				perror("error");
-			}
 		}
 		if (strcmp(cmd, "exit") == 0)
 		{
