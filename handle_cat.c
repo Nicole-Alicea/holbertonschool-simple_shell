@@ -9,31 +9,17 @@
 
 void handle_cat(char *filename)
 {
-	char line[1024], *cmd, *arg, *start, *command = NULL;
+	char line[1024];
 	FILE *file = fopen(filename, "r");
-
-	start = command;
-	cmd = strtok(start, " ");
-	arg = strtok(NULL, " ");
-
-	if (cmd && strcmp(cmd, "cat") == 0)
+	
+	if (file == NULL)
 	{
-		if (arg == NULL)
-		{
-			fprintf(stderr, "cat: Missing file name\n");
-		}
-		else
-		{
-			if (file == NULL)
-			{
-				perror("fopen");
-				return;
-			}
-			while (fgets(line, sizeof(line), file) != NULL)
-			{
-				printf("%s", line);
-			}
-			fclose(file);
-		}
+		perror("fopen");
+		return;
 	}
+	while (fgets(line, sizeof(line), file) != NULL)
+	{
+		printf("%s", line);
+	}
+	fclose(file);
 }

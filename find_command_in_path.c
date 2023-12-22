@@ -20,7 +20,9 @@ int find_command_in_path(char *cmd, char *fullpath)
 			return (1);
 		}
 		else
+		{
 			return (0);
+		}
 	}
 	path = getenv("PATH");
 
@@ -39,7 +41,9 @@ int find_command_in_path(char *cmd, char *fullpath)
 			sprintf(fullpath, "%s/%s", token, cmd);
 
 			if (stat(fullpath, &st) == 0 && S_ISREG(st.st_mode))
+			{
 				return (1); /* Command found */
+			}
 		}
 		token = strtok(NULL, ":");
 	}
