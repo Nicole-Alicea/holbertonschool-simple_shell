@@ -1,5 +1,4 @@
 #include "main.h"
-
 int main(void)
 {
 	char *command = NULL, *cmd, *arg, *start, *end, *argv[3];
@@ -8,18 +7,14 @@ int main(void)
 	int is_interactive, status, exit_status, i;
 	char fullpath[MAX_PATH_LENGTH];
 	pid_t pid;
-
 	is_interactive = isatty(STDIN_FILENO);
-
 	while (1)
 	{
 		if (is_interactive)
 		{
 			printf("simple_shell_NJR($) ");
 		}
-
 		nread = getline(&command, &len, stdin);
-
 		if (nread == -1)
 		{
 			if (is_interactive)
@@ -30,7 +25,6 @@ int main(void)
 		}
 		start = command;
 		end = command + strlen(command) - 1;
-		
 		while (*start && isspace((unsigned char)*start))
 		{
 			start++;
@@ -40,14 +34,13 @@ int main(void)
 			end--;
 		}
 		*(end + 1) = '\0';
-		
+
 		if (*start == '\0')
 		{
 			continue;
 		}
 		cmd = strtok(start, " ");
 		arg = strtok(NULL, " ");
-		
 		if (cmd && strcmp(cmd, "cat") == 0)
 		{
 			if (arg == NULL)
