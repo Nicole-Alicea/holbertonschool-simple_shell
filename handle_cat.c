@@ -11,7 +11,7 @@ void handle_cat(char *filename)
 {
 	char line[1024];
 	FILE *file = fopen(filename, "r");
-	
+
 	if (file == NULL)
 	{
 		perror("fopen");
