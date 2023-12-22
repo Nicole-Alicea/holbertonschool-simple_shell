@@ -1,5 +1,4 @@
 #include "main.h"
-#include <string.h>
 
 /**
  * is_path - Checks if a command string is a path
@@ -12,6 +11,8 @@
  *
  * Return: 1 if it's a path, 0 otherwise.
  */
-int is_path(char *cmd) {
-  return (cmd[0] == '.' || cmd[0] == '/' || strstr(cmd, "/"));
+
+int is_path(char *cmd)
+{
+	return (cmd[0] == '.' || cmd[0] == '/' || strstr(cmd, "/"));
 }

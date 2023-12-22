@@ -2,7 +2,7 @@
 
 ### Description
 
-For this simple shell project, we were divided into groups of three and given the task of writing a simple UNIX command interpreter.
+For this simple shell project, we were divided into groups of three and given the task of writing a simple UNIX command interpreter. A Unix shell is a command-line interpreter that provides a command line user interface for Unix-like operating systems. The shell is both an interactive command language and a scripting language, and it is used by the operating system to control the execution of the system using shell scripts.
 
 -----------------------
 ### Resources

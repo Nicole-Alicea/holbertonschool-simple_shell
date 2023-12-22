@@ -1,3 +1,50 @@
 .\" Man page for simple_shell.
 .\" Contact na.aliceanicole@gmail.com to correct errors or typos.
 .TH man 1 "11 December 2023" "1.0" "simple_shell man page"
+
+.SH NAME
+.B simple_shell
+
+.SH DESCRIPTION
+simple_shell is a basic Unix shell that acts as an interface between the user and the operating system, and allows the user to execute commands. The simple_shell takes a command string as input, parses it, and performs the corresponding action based on the command.
+
+.SH COMMANDS
+The following commands are supported by simple_shell:
+
+.TP
+.B 'cat'
+Displays the contents of a file.
+
+.TP
+.B 'cd'
+Changes the current working directory.
+
+.TP
+.B 'env'
+Displays the environment variables.
+
+.TP
+.B 'exit'
+Exits the shell.
+
+Other commands are executed using the 'execute_command' function.
+
+.SH PARAMETERS
+.B 'command'
+A null-terminated string containing the user-input command.
+
+.SH USAGE
+The shell will display the prompt 'simple_shell_NJR($)' and wait for user input. Enter commands, and the shell will execute them accordingly.
+
+.SH BUGS
+No known bugs at the time of writing this documentation.
+
+.SH RETURN VALUE
+0 upon succesful execution.
+
+.SH AUTHORS
+Nicole Alicea Plumey
+
+Raphael Santos Jimenez
+
+Jeremy Cardona Crespo
