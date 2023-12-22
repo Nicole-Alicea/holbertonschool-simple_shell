@@ -60,6 +60,13 @@ int main(void)
 			}
 			continue;
 		}
+		if (strcmp(cmd, "ls") == 0)
+		{
+			if ("ls" && "PATH" == 0)
+			{
+				perror("error");
+			}
+		}
 		if (strcmp(cmd, "exit") == 0)
 		{
 			free(command);
