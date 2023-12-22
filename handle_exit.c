@@ -7,12 +7,15 @@
  * Return: 0 if the command is "exit", 1 otherwise
  */
 
-int handle_exit(char *cmd)
+int handle_exit(char *arg)
 {
-	if (strcmp(cmd, "exit") == 0)
+	int exit_status = atoi(arg);
+	if (arg != NULL)
 	{
-		free(cmd);
-		return (0);
+		exit(exit_status);
 	}
-	return (1);
+	else
+	{
+		exit(0);
+	}
 }

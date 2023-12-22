@@ -40,5 +40,7 @@ void execute_command(char *cmd, char *arg)
 		}
 	}
 	else
+	{
 		perror("fork");
+	}
 }

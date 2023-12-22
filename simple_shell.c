@@ -5,10 +5,10 @@
  * argument, and performs the corresponding action
  * @command: Input command string to be processed
  *
- * Return: void
+ * Return: 0 if "exit" command is called, 1 otherwise
  */
 
-void process_input(char *command)
+int process_input(char *command)
 {
 	char *cmd = strtok(command, " ");
 	char *arg = strtok(NULL, " ");
@@ -17,25 +17,27 @@ void process_input(char *command)
 	{
 		if (strcmp(cmd, "cat") == 0)
 		{
-			handle_cat(cmd);
+			handle_cat(arg);
 		}
 		else if (strcmp(cmd, "cd") == 0)
 		{
-			handle_cd(cmd);
+			handle_cd(arg);
 		}
 		else if (strcmp(cmd, "env") == 0)
 		{
-			handle_env(cmd);
+			handle_env(arg);
 		}
 		else if (strcmp(cmd, "exit") == 0)
 		{
-			handle_exit(cmd);
+			handle_exit(arg); /*pass the argument to handle_exit*/
+			return (0); /*indicates "exit" command was processed*/
+		}
+		else
+		{
+			execute_command(cmd, arg);
 		}
 	}
-	else
-	{
-		execute_command(cmd, arg);
-	}
+	return (1);/*indicates a command other than "exit" was processed*/
 }
 
 /**
@@ -75,7 +77,10 @@ int main(void)
 		*(end + 1) = '\0';
 		if (*start != '\0')
 		{
-			process_input(start);
+			if (process_input(start) == 0)
+			{
+				break;
+			}
 		}
 	}
 	free(command);
