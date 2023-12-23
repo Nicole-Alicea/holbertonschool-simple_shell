@@ -55,20 +55,10 @@ int execute_command(char *cmd, char *arg, char *fullpath)
 	pid = fork();
 	if (pid == 0)
 	{
-		char **argv = malloc(sizeof(char *) * 3);
-
-		if (argv == NULL)
-		{
-			perror("malloc");
-			exit(EXIT_FAILURE);
-		}
-		argv[0] = fullpath;
-		argv[1] = arg;
-		argv[2] = NULL;
+		char *argv[] = {fullpath, arg, NULL;
 
 		execve(fullpath, argv, environ);
 		perror("execve");
-		free(argv);
 		exit(EXIT_FAILURE);
 	}
 	else if (pid > 0)
