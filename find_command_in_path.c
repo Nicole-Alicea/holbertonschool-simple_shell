@@ -47,5 +47,6 @@ int find_command_in_path(char *cmd, char *fullpath)
 		}
 		token = strtok(NULL, ":");
 	}
+	fprintf(stderr, "Command not found in PATH: %s\n", cmd);
 	return (0); /* Command not found */
 }
